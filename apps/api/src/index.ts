@@ -2,6 +2,8 @@ import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { Hono } from 'hono';
 
+import { prisma } from '@repo/db';
+
 const app = new Hono();
 
 app.use(
@@ -14,13 +16,18 @@ app.use(
   }),
 );
 
-const routes = app.get('/api/hello', (c) => {
-  return c.json({
-    status: 'success',
-    message: 'Xin chào từ Hono Backend!',
-    timestamp: Date.now(),
+const routes = app
+  .get('/api/hello', (c) => {
+    return c.json({
+      status: 'success',
+      message: 'Welcome from Hono Backend!',
+      timestamp: Date.now(),
+    });
+  })
+  .get('/api/users', async (c) => {
+    const users = await prisma.user.findMany();
+    return c.json({ status: 'success', users });
   });
-});
 
 app.get('/', (c) => {
   return c.text('Hello Hono!');

@@ -4,8 +4,10 @@ import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
 import './App.css';
 
-import { hc } from 'hono/client';
+import { hc, type InferResponseType } from 'hono/client';
 import type { AppTypes } from '@repo/api';
+
+type UsersResponse = InferResponseType<typeof client.api.users.$get>;
 
 const client = hc<AppTypes>(
   import.meta.env.VITE_API_URL || 'http://localhost:3000',
@@ -14,14 +16,22 @@ const client = hc<AppTypes>(
 function App() {
   const [count, setCount] = useState(0);
   const [message, setMessage] = useState('Loading...');
+  const [users, setUsers] = useState<UsersResponse['users']>([]);
 
   const sayWelcome = async () => {
     const res = await client.api.hello.$get();
     const data = await res.json();
     setMessage(data.message);
   };
+
+  const getUsers = async () => {
+    const res = await client.api.users.$get();
+    const data = await res.json();
+    setUsers(data.users);
+  };
   useEffect(() => {
     sayWelcome();
+    getUsers();
   }, []);
 
   return (
@@ -48,9 +58,7 @@ function App() {
         </div>
         <div>
           <h1>{message}</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <h2>{users ? users[0]?.name : ''}</h2>
         </div>
         <button
           type='button'

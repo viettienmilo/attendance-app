@@ -1,0 +1,22 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "prisma generate && tsc",
+    "db:migrate": "prisma migrate",
+    "db:gen": "prisma generate",
+    "db:push": "prisma push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "pg": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.8.0"
+  }
+}
