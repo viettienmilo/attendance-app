@@ -4,6 +4,8 @@ import { Hono } from 'hono';
 
 import { prisma } from '@repo/db';
 
+console.log('DATABASE_URL =', process.env.DATABASE_URL);
+
 const app = new Hono();
 
 app.use(
