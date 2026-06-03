@@ -18,5 +18,6 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalEnv": ["CORS_ORIGIN", "DATABASE_URL"]
 }
