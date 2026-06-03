@@ -7,7 +7,9 @@ import './App.css';
 import { hc } from 'hono/client';
 import type { AppTypes } from '@repo/api';
 
-const client = hc<AppTypes>(import.meta.env.API_URL || 'http://localhost:3000');
+const client = hc<AppTypes>(
+  import.meta.env.VITE_API_URL || 'http://localhost:3000',
+);
 
 function App() {
   const [count, setCount] = useState(0);
