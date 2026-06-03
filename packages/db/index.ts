@@ -6,9 +6,7 @@ const prismaGlobal = globalThis as unknown as { prisma: PrismaClient | null };
 
 // Khởi tạo một pool kết nối kết hợp biến DATABASE_URL (cổng 6543)
 const pool = new pg.Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    'postgresql://postgres:12345@localhost:5432/postgres',
+  connectionString: process.env.DATABASE_URL,
 });
 const adapter = new PrismaPg(pool);
 
