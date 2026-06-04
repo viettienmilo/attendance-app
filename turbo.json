@@ -19,5 +19,11 @@
       "persistent": true
     }
   },
-  "globalEnv": ["CORS_ORIGIN", "DATABASE_URL", "VITE_API_URL"]
+  "globalEnv": [
+    "CORS_ORIGIN",
+    "DATABASE_URL",
+    "VITE_API_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL"
+  ]
 }
