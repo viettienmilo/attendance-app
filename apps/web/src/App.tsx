@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
 import { useEffect, useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
@@ -22,7 +27,6 @@ function App() {
   const [logged, setLogged] = useState(false);
   const [message, setMessage] = useState('Loading...');
   const [users, setUsers] = useState<UsersResponse['users']>([]);
-  // Hook tự động quản lý, lưu trữ trạng thái đăng nhập từ Cookie trình duyệt
   const { data: session, isPending } = authClient.useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,6 +66,9 @@ function App() {
 
   const handleSignIn = async () => {
     await authClient.signIn.email({ email, password });
+    if (session) {
+      setLogged(true);
+    }
   };
 
   useEffect(() => {

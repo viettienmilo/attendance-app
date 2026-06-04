@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
 import { createAuthClient } from 'better-auth/react';
 import { adminClient } from 'better-auth/client/plugins'; // Import plugin client
 
