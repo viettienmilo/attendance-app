@@ -21,5 +21,11 @@ export const auth = betterAuth({
       // Sử dụng ID số, tự động tăng của PostgreSQL
       generateId: 'serial',
     },
+    // buộc trình duyệt không chặn session cookie cross-site
+    defaultCookieAttributes: {
+      sameSite: 'none',
+      secure: true,
+      partitioned: true,
+    },
   },
 });
