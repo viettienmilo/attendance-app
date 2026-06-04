@@ -32,7 +32,7 @@ const routes = app
   .get('/api/hello', (c) => {
     return c.json({
       status: 'success',
-      message: 'Welcome from Hono Backend!',
+      message: 'Welcome to Hono/React/Vite!',
       timestamp: Date.now().toLocaleString(),
     });
   })

@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
+import honoLogo from './assets/hono.svg';
+
 import './App.css';
 
 // thư viện để truy xuất hono từ frontend
@@ -88,19 +90,26 @@ function App() {
           <img
             src={heroImg}
             className='base'
-            width='170'
-            height='179'
             alt=''
           />
-          <img
-            src={reactLogo}
-            className='framework'
-            alt='React logo'
-          />
+
+          <div className='framework-plane'>
+            <img
+              src={reactLogo}
+              className='framework'
+              alt='React'
+            />
+            <img
+              src={honoLogo}
+              className='hono'
+              alt='Hono'
+            />
+          </div>
+
           <img
             src={viteLogo}
             className='vite'
-            alt='Vite logo'
+            alt='Vite'
           />
         </div>
         <div>
@@ -117,58 +126,60 @@ function App() {
           Login state check : {logged ? 'Logged' : 'Not logged'}
         </button>
 
-        {/* Giao diện khi người dùng chưa đăng nhập */}
-        {!session && (
-          <div style={{ padding: '2rem', maxWidth: '400px' }}>
-            <h2>Sign-in / Sign-up</h2>
-            <div style={{ padding: '1rem', margin: 4 }}>
-              <input
-                placeholder='Email'
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                type='password'
-                placeholder='Password'
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <br />
-            <button onClick={handleSignIn}>Sign in</button>
-            <button
-              onClick={handleSignUp}
-              style={{ marginLeft: '10px' }}
-            >
-              Sign up
-            </button>
-          </div>
-        )}
-
         <div className='ticks'></div>
-        <section id='spacer'></section>
-
-        {/* Giao diện hiển thị dựa trên phân quyền Role có được từ plugin Admin */}
-        {session && (
-          <>
-            <h2>Welcome back, {session.user.name}!</h2>
-            <p>Email: {session.user.email}</p>
-            <p>
-              Your role: <strong>{session.user.role || 'Not available'}</strong>
-            </p>
-            {session.user.role === 'admin' && (
-              <div
-                style={{
-                  background: '#ffebee',
-                  padding: '1rem',
-                  marginTop: '1rem',
-                }}
-              >
-                <h3>Dashboard activated</h3>
+        <div className='next-steps'>
+          {/* Giao diện khi người dùng chưa đăng nhập */}
+          {!session && (
+            <div style={{ padding: '2rem', maxWidth: '400px' }}>
+              <h2>Sign-in / Sign-up</h2>
+              <div style={{ padding: '1rem', margin: 4 }}>
+                <input
+                  placeholder='Email'
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                  type='password'
+                  placeholder='Password'
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-            )}
-            <br />
-            <button onClick={() => authClient.signOut()}>Sign out</button>
-          </>
-        )}
+              <br />
+              <button onClick={handleSignIn}>Sign in</button>
+              <button
+                onClick={handleSignUp}
+                style={{ marginLeft: '10px' }}
+              >
+                Sign up
+              </button>
+            </div>
+          )}
+
+          {/* Giao diện hiển thị dựa trên phân quyền Role có được từ plugin Admin */}
+          {session && (
+            <>
+              <h2>Welcome back, {session.user.name}!</h2>
+              <p>Email: {session.user.email}</p>
+              <p>
+                Your role:{' '}
+                <strong>{session.user.role || 'Not available'}</strong>
+              </p>
+              {session.user.role === 'admin' && (
+                <div
+                  style={{
+                    background: '#ffebee',
+                    padding: '1rem',
+                    marginTop: '1rem',
+                  }}
+                >
+                  <h3>Dashboard activated</h3>
+                </div>
+              )}
+              <br />
+              <button onClick={() => authClient.signOut()}>Sign out</button>
+            </>
+          )}
+        </div>
+        <section id='spacer'></section>
       </section>
     </>
   );
