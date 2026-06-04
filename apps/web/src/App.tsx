@@ -4,19 +4,28 @@ import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
 import './App.css';
 
+// thư viện để truy xuất hono từ frontend
 import { hc, type InferResponseType } from 'hono/client';
+// kiểu dữ liệu từ backend
 import type { AppTypes } from '@repo/api';
-
+// import { authClient } from './auth-client';
+// lấy kiểu trả về từ response của backend
 type UsersResponse = InferResponseType<typeof client.api.users.$get>;
-
+// khai báo hono RPC
 const client = hc<AppTypes>(
   import.meta.env.VITE_API_URL || 'http://localhost:3000',
 );
+// thư viện better-auth client
+import { authClient } from './auth-client.js';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [logged, setLogged] = useState(false);
   const [message, setMessage] = useState('Loading...');
   const [users, setUsers] = useState<UsersResponse['users']>([]);
+  // Hook tự động quản lý, lưu trữ trạng thái đăng nhập từ Cookie trình duyệt
+  const { data: session, isPending } = authClient.useSession();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const sayWelcome = async () => {
     const res = await client.api.hello.$get();
@@ -29,10 +38,41 @@ function App() {
     const data = await res.json();
     setUsers(data.users);
   };
+
+  const checkUserLoginState = async () => {
+    const res = await client.api.test.user.$get();
+    const data = await res.json();
+
+    if (!data) {
+      setLogged(false);
+    }
+    if (data.message === 'success') {
+      setLogged(true);
+    }
+  };
+
+  const handleSignUp = async () => {
+    await authClient.signUp.email({
+      email,
+      password,
+      name: 'New user',
+    });
+    alert('Sign up successfully');
+  };
+
+  const handleSignIn = async () => {
+    await authClient.signIn.email({ email, password });
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     sayWelcome();
     getUsers();
   }, []);
+
+  if (isPending) {
+    return <section id='center'>Loading...</section>;
+  }
 
   return (
     <>
@@ -58,136 +98,71 @@ function App() {
         </div>
         <div>
           <h1>{message}</h1>
-          <h2>{users ? users[0]?.name : ''}</h2>
+          <h2 style={{ color: 'yellowgreen' }}>
+            {users ? users[0]?.name : ''}
+          </h2>
         </div>
         <button
           type='button'
           className='counter'
-          onClick={() => setCount((count) => count + 1)}
+          onClick={checkUserLoginState}
         >
-          Count is {count}
+          Login state check : {logged ? 'Logged' : 'Not logged'}
         </button>
+
+        {/* Giao diện khi người dùng chưa đăng nhập */}
+        {!session && (
+          <div style={{ padding: '2rem', maxWidth: '400px' }}>
+            <h2>Sign-in / Sign-up</h2>
+            <div style={{ padding: '1rem', margin: 4 }}>
+              <input
+                placeholder='Email'
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type='password'
+                placeholder='Password'
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <br />
+            <button onClick={handleSignIn}>Sign in</button>
+            <button
+              onClick={handleSignUp}
+              style={{ marginLeft: '10px' }}
+            >
+              Sign up
+            </button>
+          </div>
+        )}
+
+        <div className='ticks'></div>
+        <section id='spacer'></section>
+
+        {/* Giao diện hiển thị dựa trên phân quyền Role có được từ plugin Admin */}
+        {session && (
+          <>
+            <h2>Welcome back, {session.user.name}!</h2>
+            <p>Email: {session.user.email}</p>
+            <p>
+              Your role: <strong>{session.user.role || 'Not available'}</strong>
+            </p>
+            {session.user.role === 'admin' && (
+              <div
+                style={{
+                  background: '#ffebee',
+                  padding: '1rem',
+                  marginTop: '1rem',
+                }}
+              >
+                <h3>Dashboard activated</h3>
+              </div>
+            )}
+            <br />
+            <button onClick={() => authClient.signOut()}>Sign out</button>
+          </>
+        )}
       </section>
-
-      <div className='ticks'></div>
-
-      <section id='next-steps'>
-        <div id='docs'>
-          <svg
-            className='icon'
-            role='presentation'
-            aria-hidden='true'
-          >
-            <use href='/icons.svg#documentation-icon'></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a
-                href='https://vite.dev/'
-                target='_blank'
-              >
-                <img
-                  className='logo'
-                  src={viteLogo}
-                  alt=''
-                />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a
-                href='https://react.dev/'
-                target='_blank'
-              >
-                <img
-                  className='button-icon'
-                  src={reactLogo}
-                  alt=''
-                />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id='social'>
-          <svg
-            className='icon'
-            role='presentation'
-            aria-hidden='true'
-          >
-            <use href='/icons.svg#social-icon'></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a
-                href='https://github.com/vitejs/vite'
-                target='_blank'
-              >
-                <svg
-                  className='button-icon'
-                  role='presentation'
-                  aria-hidden='true'
-                >
-                  <use href='/icons.svg#github-icon'></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a
-                href='https://chat.vite.dev/'
-                target='_blank'
-              >
-                <svg
-                  className='button-icon'
-                  role='presentation'
-                  aria-hidden='true'
-                >
-                  <use href='/icons.svg#discord-icon'></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a
-                href='https://x.com/vite_js'
-                target='_blank'
-              >
-                <svg
-                  className='button-icon'
-                  role='presentation'
-                  aria-hidden='true'
-                >
-                  <use href='/icons.svg#x-icon'></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a
-                href='https://bsky.app/profile/vite.dev'
-                target='_blank'
-              >
-                <svg
-                  className='button-icon'
-                  role='presentation'
-                  aria-hidden='true'
-                >
-                  <use href='/icons.svg#bluesky-icon'></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className='ticks'></div>
-      <section id='spacer'></section>
     </>
   );
 }
