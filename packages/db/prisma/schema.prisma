@@ -1,8 +1,3 @@
-/**
- * @copyright 2026 Nguyen Viet Tien
- * @license Apache-2.0
- */
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -12,7 +7,85 @@ datasource db {
   provider = "postgresql"
 }
 
-model account {
+model Attendance {
+  id         Int       @id @default(autoincrement())
+  studentId  String    @db.VarChar(255)
+  attendDate DateTime  @db.Date
+  absent     Boolean   @default(false)
+  permission Boolean   @default(false)
+  courseId   String    @db.VarChar(255)
+
+  course     Course    @relation(fields: [courseId], references: [id], onDelete: NoAction, map: "attendance_course_fk")
+  student    Student   @relation(fields: [studentId], references: [id], onDelete: Restrict, map: "attendance_student_fk")
+
+  @@unique([studentId, courseId, attendDate], name: "attendance_identifier")
+  @@map("attendance")
+}
+
+model Course {
+  id         String     @id(map: "course_pk") @db.VarChar(255)
+  title      String     @db.VarChar(256)
+
+  attendance Attendance[]
+  score      Score[]
+
+  @@map("course")
+}
+
+model MyClass {
+  id      String    @id(map: "myclass_pk") @db.VarChar(255)
+  name    String    @db.VarChar(255)
+
+  student Student[]
+
+  @@map("myclass")
+}
+
+model Score {
+  courseId  String  @db.VarChar(255)
+  testId    Int
+  studentId String  @db.VarChar(255)
+  score     Decimal @default(0) @db.Decimal(3, 1)
+
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Restrict, map: "score_course_fk")
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Restrict, map: "score_student_fk")
+  test      Test    @relation(fields: [testId], references: [id], onDelete: Restrict, map: "score_test_fk")
+
+  @@id([courseId, testId, studentId], map: "score_pk")
+  @@map("score")
+}
+
+model Student {
+  id         String       @id(map: "student_pk") @db.VarChar(255)
+  firstName  String?      @db.VarChar(255)
+  lastName   String?      @db.VarChar(255)
+  dob        DateTime?    @db.Date
+  address    String?      @db.VarChar(255)
+  classId    String      @db.VarChar(255)
+
+  attendance Attendance[]
+  score      Score[]
+
+  myclass    MyClass      @relation(fields: [classId], references: [id], map: "student_myclass_fk")
+
+  @@map("student")
+}
+
+model Test {
+  id       Int     @id(map: "tests_pk") @default(autoincrement())
+  name     String  @db.VarChar(255)
+  content  String? @db.VarChar(255)
+  timeInfo String? @db.VarChar(255)
+  weight   Decimal @db.Decimal(2,1)
+
+  score    Score[]
+
+  @@index([id], map: "tests_id_idx")
+  @@map("test")
+}
+
+model Account {
+  id                    Int       @id @default(autoincrement())
   accountId             String
   providerId            String
   accessToken           String?
@@ -24,24 +97,30 @@ model account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime
-  id                    Int       @id @default(autoincrement())
   userId                Int
-  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
 }
 
-model session {
+model Session {
+  id        Int      @id @default(autoincrement())
   expiresAt DateTime
   token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  id        Int      @id @default(autoincrement())
   userId    Int
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
 }
 
-model user {
+model User {
+  id            Int       @id @default(autoincrement())
   name          String
   email         String    @unique
   emailVerified Boolean
@@ -52,16 +131,20 @@ model user {
   banned        Boolean?
   banReason     String?
   banExpires    DateTime?
-  id            Int       @id @default(autoincrement())
-  account       account[]
-  session       session[]
+
+  account       Account[]
+  session       Session[]
+
+  @@map("user")
 }
 
-model verification {
+model Verification {
+  id         Int       @id @default(autoincrement())
   identifier String
   value      String
   expiresAt  DateTime
   createdAt  DateTime? @default(now())
   updatedAt  DateTime?
-  id         Int       @id @default(autoincrement())
+
+  @@map("verification")
 }

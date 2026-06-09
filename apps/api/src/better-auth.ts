@@ -28,9 +28,8 @@ export const auth = betterAuth({
     },
     // buộc trình duyệt không chặn session cookie cross-site
     defaultCookieAttributes: {
-      sameSite: 'none',
-      secure: true,
-      partitioned: true,
+      sameSite: 'lax',
+      secure: false,
     },
   },
 });

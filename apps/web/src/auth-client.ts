@@ -10,4 +10,8 @@ export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
   // Khai báo plugin phía client để đồng bộ hóa Type-safe cho các trường admin
   plugins: [adminClient()],
+  // Ép client luôn đính kèm cookie khi gọi API sang Backend
+  fetchOptions: {
+    credentials: 'include',
+  },
 });

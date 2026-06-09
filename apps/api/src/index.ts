@@ -2,15 +2,21 @@
  * @copyright 2026 Nguyen Viet Tien
  * @license Apache-2.0
  */
+import 'dotenv/config';
 
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
 import { Hono } from 'hono';
 
-import 'dotenv/config';
-
-import { prisma } from '@repo/db';
 import { auth } from './better-auth.js';
+import {
+  studentRouter,
+  myclassRouter,
+  courseRouter,
+  attendanceRouter,
+  testRouter,
+  scoreRouter,
+} from './router.js';
 
 const app = new Hono();
 
@@ -29,38 +35,12 @@ app.on(['POST', 'GET'], '/api/auth/*', (c) => {
 });
 
 const routes = app
-  .get('/api/hello', (c) => {
-    return c.json({
-      status: 'success',
-      message: 'Welcome to Hono/React/Vite!',
-      timestamp: Date.now().toLocaleString(),
-    });
-  })
-  .get('/api/users', async (c) => {
-    const users = await prisma.user.findMany();
-    return c.json({ status: 'success', users });
-  })
-  .get('/api/test/user', async (c) => {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
-    if (!session) {
-      return c.json(
-        {
-          status: 'failed',
-          message: `Access denied`,
-          role: 'not available',
-        },
-        401,
-      );
-    }
-    return c.json(
-      {
-        status: 'success',
-        message: `Access granted`,
-        role: session.user.role,
-      },
-      200,
-    );
-  });
+  .route('/api/students', studentRouter)
+  .route('/api/classes', myclassRouter)
+  .route('/api/courses', courseRouter)
+  .route('/api/attendances', attendanceRouter)
+  .route('/api/tests', testRouter)
+  .route('/api/scores', scoreRouter);
 
 app.get('/', (c) => {
   return c.json({

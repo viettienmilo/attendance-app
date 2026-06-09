@@ -6,7 +6,8 @@
     "build": "prisma generate && tsc",
     "db:migrate": "prisma migrate",
     "db:gen": "prisma generate",
-    "db:push": "prisma push",
+    "db:push": "prisma db push",
+    "db:pull": "prisma db pull",
     "db:studio": "prisma studio"
   },
   "dependencies": {

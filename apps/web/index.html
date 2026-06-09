@@ -2,12 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>ecotech-vn</title>
+    <script>
+      (function () {
+        try {
+          // 1. Đọc giá trị theme lưu từ localStorage (Ví dụ key là 'theme' hoặc 'vite-ui-theme')
+          // Nếu bạn dùng thư viện như shadcn/ui, key mặc định thường là 'vite-ui-theme'
+          const theme = localStorage.getItem('theme') || 'system';
+
+          // 2. Kiểm tra xem hệ điều hành của máy tính đang là Dark Mode hay Light Mode
+          const isSystemDark = window.matchMedia(
+            '(prefers-color-scheme: dark)',
+          ).matches;
+
+          // 3. Quyết định xem có áp dụng class dark hay không
+          const shouldBeDark =
+            theme === 'dark' || (theme === 'system' && isSystemDark);
+
+          if (shouldBeDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script
+      type="module"
+      src="/src/main.tsx"
+    ></script>
   </body>
 </html>
