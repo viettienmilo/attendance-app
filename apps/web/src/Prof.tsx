@@ -30,7 +30,7 @@ const Prof = () => {
           </CardHeader>
 
           {/* Đưa thông tin liên hệ về dạng danh sách dọc gọn gàng */}
-          <CardContent className='px-0 flex flex-col text-sm text-muted-foreground items-start'>
+          <CardContent className='px-0 flex flex-col gap-1 text-sm text-muted-foreground items-start'>
             <div className='flex gap-3 line-clamp-1 italic items-end'>
               <Call02Icon
                 size={18}
