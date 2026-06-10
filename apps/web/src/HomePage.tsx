@@ -116,11 +116,11 @@ const HomePage = () => {
 
   return (
     <div className='container max-w-7xl pt-6 md:pt-10 flex flex-col min-h-[calc(100vh-var(--header-height)-var(--footer-height))] justify-start items-stretch w-full'>
-      <div className='text-2xl'> Xem điểm </div>
+      <div className='text-xl lg:text-2xl font-semibold'> Xem điểm </div>
 
-      <div className='grid grid-cols-[1fr_auto_2fr] items-stretch w-full h-full gap-4 flex-1 pt-10'>
+      <div className='flex flex-col lg:grid lg:grid-cols-[1fr_auto_2fr] items-stretch w-full h-full gap-4 flex-1 py-4 lg:py-10'>
         <div className='flex flex-col justify-start items-center gap-2'>
-          <Field className='max-w-sm'>
+          <Field className='w-full lg:max-w-sm'>
             <FieldLabel htmlFor='studentId'>Mã số SV</FieldLabel>
             <InputGroup>
               <InputGroupInput
@@ -133,12 +133,12 @@ const HomePage = () => {
                 <User02Icon className='text-muted-foreground' />
               </InputGroupAddon>
             </InputGroup>
-            <FieldDescription className='italic text-right'>
+            <FieldDescription className='italic'>
               Nhập mã số sinh viên
             </FieldDescription>
           </Field>
           <Button
-            className='w-80 justify-self-end md:w-full mt-3'
+            className='w-full justify-self-end mt-3'
             onClick={handleSubmit}
           >
             Xem điểm
@@ -147,11 +147,11 @@ const HomePage = () => {
 
         <Separator
           orientation='vertical'
-          className='h-full mx-8'
+          className='hidden lg:block h-full mx-8'
         />
 
-        <div className='w-full h-full flex flex-col justify-start items-start gap-6'>
-          <div className='w-full h-full grid grid-cols-[1fr_3fr] items-stretch gap-3'>
+        <div className='w-full h-full flex flex-col justify-start items-start gap-6 py-4 lg:py-0'>
+          <div className='w-full h-full grid grid-cols-[200px_1fr] items-stretch gap-3'>
             <p className=''>Sinh viên</p>
             <p className='font-bold'>{student?.fullName ?? '-'}</p>
             <p>Số ngày nghỉ</p>

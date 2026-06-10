@@ -30,7 +30,7 @@ import AppBrand from '@/AppBrand';
 /**
  * Assets
  */
-import { UserGroup02Icon, Edit02Icon, CheckListIcon } from 'hugeicons-react';
+import { SolarSystemIcon, Store02Icon, Doc02Icon } from 'hugeicons-react';
 
 /**
  * Constants
@@ -39,17 +39,17 @@ const MAIN_MENU = [
   {
     label: 'Hệ thống thông tin quản lý',
     url: '',
-    icon: <UserGroup02Icon />,
+    icon: <SolarSystemIcon />,
   },
   {
     label: 'Thương mại điện tử',
     url: 'e-commerce',
-    icon: <Edit02Icon />,
+    icon: <Store02Icon />,
   },
   {
     label: 'Tài liệu',
     url: 'docs',
-    icon: <CheckListIcon />,
+    icon: <Doc02Icon />,
   },
 ] as const;
 

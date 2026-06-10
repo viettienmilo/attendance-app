@@ -16,6 +16,7 @@ import Score from './Score';
 import Summary from './Summary';
 import ProgramLayout from './ProgramLayout';
 import MisPage from './MisPage';
+import DocsPage from './DocsPage';
 
 import { attendanceLoader, scoreLoader, summaryLoader } from './loader';
 import { attendanceAction, scoreAction } from './action';
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
             index: true,
             Component: MisPage,
             handle: { breadcrumb: 'Hệ thống thông tin quản lý' },
+          },
+          {
+            path: 'docs',
+            Component: DocsPage,
+            handle: { breadcrumb: 'Giáo trình và tài liệu tham khảo' },
           },
         ],
       },
