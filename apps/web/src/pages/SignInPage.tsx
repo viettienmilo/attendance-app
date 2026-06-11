@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 /**
  * Libraries
  */
-import { authClient } from '@/auth-client';
+import { authClient } from '@/auth-client/auth-client';
 
 /**
  * Components
@@ -42,7 +42,7 @@ import {
 /**
  * Custom components
  */
-import AppBrand from '@/AppBrand';
+import AppBrand from '@/components/custom/AppBrand';
 
 /**
  * Assets
@@ -58,10 +58,6 @@ const SIGNIN_FORM = {
   description: 'Đăng nhập để tiếp tục',
 } as const;
 
-/**
- * @description form for user sign in using email and password
- *  using better-auth apis
- */
 const SignInPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();

@@ -17,8 +17,8 @@ import { Separator } from '@/components/ui/separator';
 /**
  * Custom components
  */
-import ThemeChanger from '@/ThemeChanger';
-import AdminBreadcrumb from '@/Breadcrumb';
+import ThemeChanger from '@/components/custom/ThemeChanger';
+import AdminBreadcrumb from '@/components/custom/Breadcrumb';
 
 const TopAppBar = ({ className, ...props }: React.ComponentProps<'header'>) => {
   return (

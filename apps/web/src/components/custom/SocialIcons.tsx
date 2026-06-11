@@ -4,11 +4,6 @@
  */
 
 /**
- * Node modules
- */
-import React from 'react';
-
-/**
  * Custom module
  */
 import { cn } from '@/lib/utils';
@@ -24,7 +19,7 @@ import {
 } from '@/components/ui/tooltip';
 
 /**
- * Interfaces/Types
+ * Interfaces
  */
 interface SocialIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number;
@@ -64,7 +59,8 @@ export const FacebookIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <path d='M12 21.25c5.108 0 9.25-4.142 9.25-9.25 0-5.109-4.142-9.25-9.25-9.25S2.75 6.891 2.75 12c0 5.108 4.142 9.25 9.25 9.25Zm0 0v-7.75m3.75-6h-1.25c-1.38 0-2.5 1.12-2.5 2.5v3.5m0 0H9.25m2.75 0h2.75' />
   </svg>
 );
@@ -90,7 +86,8 @@ export const YoutubeIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <rect
       width='20'
       height='14'
@@ -123,7 +120,8 @@ export const GithubIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <circle
       cx='12'
       cy='12'
@@ -154,7 +152,8 @@ export const ZaloIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <path d='M19 4.5H7.5C3.8 7.8 2.7 12.2 6 18.6c.2.8-.2 1.6-.9 2.4 1.1.1 2.1-.1 3-.6 6.2 2.8 9.7 1 13.1-1.2l.02-13.7a1 1 0 0 0-1-1Z' />
     <polyline points='8 10.5 11 10.5 8 15 11 15' />
     <circle
@@ -194,7 +193,8 @@ export const LinkedInIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <path d='M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z' />
     <rect
       width='4'
@@ -231,7 +231,8 @@ export const TiktokIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <path d='M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5' />
   </svg>
 );
@@ -257,7 +258,8 @@ export const InstagramIcon = ({
     strokeLinejoin='round'
     className={`${iconBaseClasses} ${className}`}
     style={{ width: size, height: size, ...style }}
-    {...props}>
+    {...props}
+  >
     <rect
       width='20'
       height='20'
@@ -293,7 +295,8 @@ export const SocialLink = ({
       href={href}
       target='_blank'
       rel='noopener noreferrer'
-      className='group flex items-center justify-center'>
+      className='group flex items-center justify-center'
+    >
       <Icon
         size={size}
         strokeWidth={strokeWidth}

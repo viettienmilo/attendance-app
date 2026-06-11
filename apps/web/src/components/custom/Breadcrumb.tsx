@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2026-present, Nguyen Viet Tien.
- * Licensed under the MIT License (the "LICENSE");
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
  */
 
 /**

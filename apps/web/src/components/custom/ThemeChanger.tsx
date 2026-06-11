@@ -35,9 +35,6 @@ import {
   LaptopIcon,
 } from 'hugeicons-react';
 
-/**
- * @description change theme and them mode
- */
 export default function ThemeChanger() {
   const [flavor, setFlavor] = useState(() => {
     if (typeof window !== 'undefined') {

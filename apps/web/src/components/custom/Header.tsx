@@ -6,14 +6,14 @@
 /**
  * Modules
  */
-import { Link, useLocation } from 'react-router';
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 
 /**
  * Libraries
  */
-import { authClient } from '@/auth-client';
+import { authClient } from '@/auth-client/auth-client';
 import { cn } from '@/lib/utils';
 
 /**
@@ -21,19 +21,17 @@ import { cn } from '@/lib/utils';
  */
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import AppBrand from '@/AppBrand';
-// import Navbar from '@/Navbar';
-import ThemeChanger from '@/ThemeChanger';
+
+/**
+ * Custom components
+ */
+import AppBrand from '@/components/custom/AppBrand';
+import ThemeChanger from '@/components/custom/ThemeChanger';
 
 /**
  * Assets
  */
 import { Menu01Icon, Cancel01Icon } from 'hugeicons-react';
-
-/**
- * Types
- */
-import type React from 'react';
 
 const Header = ({ className, ...props }: React.ComponentProps<'header'>) => {
   const { data: session } = authClient.useSession();
@@ -63,8 +61,6 @@ const Header = ({ className, ...props }: React.ComponentProps<'header'>) => {
           )}
         >
           <div></div>
-          {/* <Navbar className='max-md:p-4 md:ms-4 ' /> */}
-
           <AnimatePresence>
             <Separator className='md:hidden' />
             <motion.div

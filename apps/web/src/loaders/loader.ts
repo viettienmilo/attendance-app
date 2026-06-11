@@ -1,7 +1,21 @@
-import { hc } from 'hono/client';
-import type { AppTypes } from '@repo/api';
-// import type { InferResponseType } from 'hono';
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
 
+/**
+ * Modules
+ */
+import { hc } from 'hono/client';
+
+/**
+ * Repos
+ */
+import type { AppTypes } from '@repo/api';
+
+/**
+ * Types
+ */
 const client = hc<AppTypes>(
   import.meta.env.VITE_API_URL || 'http://localhost:3000',
   {
@@ -30,12 +44,6 @@ export type Test = {
   timeInfo: string | null;
   weight: string | number;
 };
-
-// type MyClassResponse = InferResponseType<typeof client.api.classes.$get>;
-// type SuccessfulMyClassData = Extract<
-//   MyClassResponse,
-//   { classes: MyClass[] }
-// >['classes'];
 
 export const attendanceLoader = async () => {
   const res1 = await client.api.classes.$get();

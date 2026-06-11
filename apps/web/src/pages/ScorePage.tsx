@@ -3,24 +3,29 @@
  * @license Apache-2.0
  */
 
+/**
+ * Modules
+ */
 import { useFetcher, useLoaderData } from 'react-router';
 import { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { toast } from 'sonner';
 
+/**
+ * Components
+ */
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { useForm, Controller } from 'react-hook-form';
 
 import {
   Table,
   TableBody,
-  // TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
 import {
   Select,
   SelectContent,
@@ -36,9 +41,15 @@ import {
 } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { toast } from 'sonner';
+
+/**
+ * Assets
+ */
 import { Loading03Icon } from 'hugeicons-react';
 
+/**
+ * Interfaces
+ */
 interface AttendanceFormData {
   records: Record<string, number>;
 }
@@ -49,7 +60,7 @@ interface PayloadFormData {
   scores: { studentId: string; score: number }[];
 }
 
-const Score = () => {
+const ScorePage = () => {
   const { classes, courses, tests } = useLoaderData();
   const [courseId, setCourseId] = useState<string>('');
   const [classId, setClassId] = useState<string>('');
@@ -73,9 +84,7 @@ const Score = () => {
   });
 
   useEffect(() => {
-    // Kiểm tra nghiêm ngặt xem students có tồn tại và có đúng là Mảng không
     if (students && Array.isArray(students)) {
-      // reset toàn bộ thông tin điểm danh về giá trị mặc định
       reset({
         records: students.reduce((acc: any, student: any) => {
           acc[student.id] = student.score ?? 0;
@@ -102,6 +111,12 @@ const Score = () => {
     );
   };
 
+  useEffect(() => {
+    if (studentsFetcher.state === 'idle' && studentsFetcher.data === null) {
+      toast.error('Vui lòng chọn đầy đủ thông tin');
+    }
+  }, [studentsFetcher.state, studentsFetcher.data]);
+
   const onSubmit = async (data: AttendanceFormData) => {
     const scores = Object.entries(data.records).map(([studentId, score]) => ({
       studentId,
@@ -123,9 +138,9 @@ const Score = () => {
   };
 
   return (
-    <div className='pt-3 md:pt-6 px-8 flex flex-col h-[calc(100dvh-100px)] justify-start items-stretch w-full overflow-hidden'>
-      <div className='grid grid-cols-[1fr_auto_2fr] items-stretch w-full h-full gap-4 flex-1 pt-10 overflow-hidden'>
-        <div className='flex flex-col justify-start items-center gap-2'>
+    <div className='pt-3 md:pt-6 px-4 md:px-8 flex flex-col h-auto lg:h-[calc(100vh-100px)] justify-start items-stretch w-full overflow-y-auto lg:overflow-hidden'>
+      <div className='flex flex-col lg:grid lg:grid-cols-[350px_auto_1fr] items-stretch w-full h-auto lg:h-full gap-4 pt-4 lg:pt-10'>
+        <div className='flex flex-col justify-start items-center gap-2 shrink-0 w-full h-auto'>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor='classId'>Môn</FieldLabel>
@@ -197,7 +212,7 @@ const Score = () => {
               </Select>
             </Field>
             <Button
-              className='w-80 justify-self-end md:w-full mt-3'
+              className='w-full mt-3'
               onClick={handleFetchStudents}
             >
               {isStudentsLoading ? (
@@ -211,14 +226,14 @@ const Score = () => {
 
         <Separator
           orientation='vertical'
-          className='h-full mx-8'
+          className='hidden lg:block h-full mx-8'
         />
 
-        <div className='w-full h-full flex flex-col justify-between items-stretch overflow-hidden'>
-          <div className='flex flex-col w-full h-full overflow-hidden'>
+        <div className='w-full h-auto lg:h-full flex flex-col justify-between items-stretch lg:overflow-hidden'>
+          <div className='flex flex-col w-full h-auto lg:h-full lg:overflow-hidden'>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className='flex flex-col h-full w-full overflow-hidden justify-between'
+              className='flex flex-col h-auto lg:h-full w-full justify-between'
             >
               <ScrollArea className='flex-1 w-full overflow-y-auto pr-2'>
                 <Table>
@@ -285,7 +300,7 @@ const Score = () => {
               </ScrollArea>
 
               {students && (
-                <div className='pt-4 pb-2 bg-background w-full flex justify-end sticky bottom-0 z-10 border-t mt-2'>
+                <div className='pt-4 pb-2 bg-background w-full flex justify-end shrink-0 border-t mt-4 sticky bottom-0 z-10 box-border'>
                   <Button
                     type='submit'
                     className='w-full md:w-auto my-2'
@@ -303,4 +318,4 @@ const Score = () => {
   );
 };
 
-export default Score;
+export default ScorePage;

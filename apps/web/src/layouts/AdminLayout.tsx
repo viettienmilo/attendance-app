@@ -11,7 +11,7 @@ import { Outlet, Navigate } from 'react-router';
 /**
  * Libraries
  */
-import { authClient } from '@/auth-client';
+import { authClient } from '@/auth-client/auth-client';
 
 /**
  * Components
@@ -22,13 +22,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 /**
  * Custom components
  */
-import AdminSidebar from '@/AdminSidebar';
-import TopAppBar from '@/TopBar';
+import AdminSidebar from '@/components/custom/AdminSidebar';
+import TopAppBar from '@/components/custom/TopBar';
 
-/**
- * @description master layout for all authed routes (admin, editor)
- *  with sidebar, topbar
- */
 const AdminLayout = () => {
   const { data: session, isPending } = authClient.useSession();
 

@@ -1,9 +1,29 @@
-import { mis } from '@/assets/mis-program';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { CircleIcon, SquareIcon } from 'hugeicons-react';
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
+/**
+ * Modules
+ */
 import { Link } from 'react-router';
+
+/**
+ * Components
+ */
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Separator } from '@/components/ui/separator';
-import Prof from './Prof';
+
+/**
+ * Custom components
+ */
+import ProfCard from '@/components/custom/ProfCard';
+
+/**
+ * Assets
+ */
+import { CircleIcon, SquareIcon } from 'hugeicons-react';
+import { mis } from '@/assets/mis-program';
 
 const MisPage = () => {
   return (
@@ -219,7 +239,7 @@ const MisPage = () => {
         <div className='text-lg mt-8 text-muted-foreground italic mb-4'>
           THÔNG TIN VỀ GIẢNG VIÊN
         </div>
-        <Prof />
+        <ProfCard />
       </div>
     </div>
   );

@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 /**
  * Custom components
  */
-import { SocialLink, ZaloIcon } from '@/SocialIcons';
-import AppBrand from '@/AppBrand';
+import { SocialLink, ZaloIcon } from '@/components/custom/SocialIcons';
+import AppBrand from '@/components/custom/AppBrand';
 
 /**
  * Assets
@@ -53,10 +53,6 @@ const SOCIAL_LINKS = [
   />,
 ] as const;
 
-/**
- * Footer of the page
- * @description display social links with icons
- */
 const Footer = ({ className, ...props }: React.ComponentProps<'footer'>) => {
   return (
     <footer

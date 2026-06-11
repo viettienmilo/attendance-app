@@ -1,3 +1,11 @@
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
+/**
+ * Components
+ */
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -7,6 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
+/**
+ * Assets
+ */
 import { Download04Icon } from 'hugeicons-react';
 
 const DocsPage = () => {

@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2026-present, Nguyen Viet Tien.
- * Licensed under the MIT License (the "LICENSE");
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
  */
 
 /**
@@ -14,7 +14,6 @@ import { NavLink } from 'react-router';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -26,40 +25,35 @@ import {
 /**
  * Custom components
  */
-import AppBrand from '@/AppBrand';
-import AdminMenu from '@/AdminMenu';
+import AppBrand from '@/components/custom/AppBrand';
 
 /**
  * Assets
  */
-import { UserGroup02Icon, Edit02Icon, CheckListIcon } from 'hugeicons-react';
+import { SolarSystemIcon, Store02Icon, Doc02Icon } from 'hugeicons-react';
 
 /**
  * Constants
  */
 const MAIN_MENU = [
   {
-    label: 'Điểm danh',
+    label: 'Hệ thống thông tin quản lý',
     url: '',
-    icon: <UserGroup02Icon />,
+    icon: <SolarSystemIcon />,
   },
   {
-    label: 'Vào điểm',
-    url: 'score',
-    icon: <Edit02Icon />,
+    label: 'Thương mại điện tử',
+    url: 'e-commerce',
+    icon: <Store02Icon />,
   },
   {
-    label: 'Tổng kết',
-    url: 'summary',
-    icon: <CheckListIcon />,
+    label: 'Tài liệu',
+    url: 'docs',
+    icon: <Doc02Icon />,
   },
 ] as const;
 
-/**
- * Used in Authed pages
- * @description display sidebar with navigation menu and user menu
- */
-const AdminSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+const ProgramSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar
       variant='inset'
@@ -101,13 +95,8 @@ const AdminSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>
-
-      {/* FOOTER */}
-      <SidebarFooter>
-        <AdminMenu />
-      </SidebarFooter>
     </Sidebar>
   );
 };
 
-export default AdminSidebar;
+export default ProgramSidebar;

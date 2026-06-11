@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2026-present, Nguyen Viet Tien.
- * Licensed under the MIT License (the "LICENSE");
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
  */
 
 /**
@@ -9,11 +9,17 @@
 import { NavLink } from 'react-router';
 
 /**
+ * Hooks
+ */
+import { useSidebar } from '@/components/ui/sidebar';
+
+/**
  * Components
  */
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -25,39 +31,38 @@ import {
 /**
  * Custom components
  */
-import AppBrand from '@/AppBrand';
+import AppBrand from '@/components/custom/AppBrand';
+import AdminMenu from '@/components/custom/AdminMenu';
 
 /**
  * Assets
  */
-import { SolarSystemIcon, Store02Icon, Doc02Icon } from 'hugeicons-react';
+import { UserGroup02Icon, Edit02Icon, CheckListIcon } from 'hugeicons-react';
 
 /**
  * Constants
  */
 const MAIN_MENU = [
   {
-    label: 'Hệ thống thông tin quản lý',
+    label: 'Điểm danh',
     url: '',
-    icon: <SolarSystemIcon />,
+    icon: <UserGroup02Icon />,
   },
   {
-    label: 'Thương mại điện tử',
-    url: 'e-commerce',
-    icon: <Store02Icon />,
+    label: 'Vào điểm',
+    url: 'score',
+    icon: <Edit02Icon />,
   },
   {
-    label: 'Tài liệu',
-    url: 'docs',
-    icon: <Doc02Icon />,
+    label: 'Tổng kết',
+    url: 'summary',
+    icon: <CheckListIcon />,
   },
 ] as const;
 
-/**
- * Used in Authed pages
- * @description display sidebar with navigation menu and user menu
- */
-const ProgramSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+const AdminSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const { setOpenMobile } = useSidebar();
+
   return (
     <Sidebar
       variant='inset'
@@ -82,6 +87,8 @@ const ProgramSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                 <NavLink
                   to={url}
                   end={url === ''}
+                  viewTransition={true}
+                  onClick={() => setOpenMobile(false)} // auto close when select item link
                 >
                   {({ isActive }) => (
                     <SidebarMenuButton
@@ -99,8 +106,13 @@ const ProgramSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>
+
+      {/* FOOTER */}
+      <SidebarFooter>
+        <AdminMenu />
+      </SidebarFooter>
     </Sidebar>
   );
 };
 
-export default ProgramSidebar;
+export default AdminSidebar;

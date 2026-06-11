@@ -1,8 +1,21 @@
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
+/**
+ * Modules
+ */
+import { useFetcher, useLoaderData } from 'react-router';
+import { useState } from 'react';
+
+/**
+ * Components
+ */
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Table,
   TableBody,
-  // TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -30,16 +43,16 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Assets
+ */
 import {
   CheckmarkCircle02Icon,
   AlertDiamondIcon,
   Alert02Icon,
 } from 'hugeicons-react';
 
-import { useFetcher, useLoaderData } from 'react-router';
-import { useState } from 'react';
-
-const Summary = () => {
+const SummaryPage = () => {
   const [courseId, setCourseId] = useState<string>('');
   const [classId, setClassId] = useState<string>('');
 
@@ -315,4 +328,4 @@ const Summary = () => {
   );
 };
 
-export default Summary;
+export default SummaryPage;

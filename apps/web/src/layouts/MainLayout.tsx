@@ -3,14 +3,24 @@
  * @license Apache-2.0
  */
 
+/**
+ * Modules
+ */
 import { Outlet, useLocation } from 'react-router';
 import { cn } from '@/lib/utils';
 
+/**
+ * Components
+ */
 import { ScrollArea } from '@/components/ui/scroll-area';
-import Header from '@/Header';
-import Footer from '@/Footer';
 
-const Layout = () => {
+/**
+ * Custom components
+ */
+import Header from '@/components/custom/Header';
+import Footer from '@/components/custom/Footer';
+
+const MainLayout = () => {
   const location = useLocation();
 
   const isShowed =
@@ -35,4 +45,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default MainLayout;

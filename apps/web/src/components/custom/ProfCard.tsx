@@ -1,3 +1,11 @@
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
+
+/**
+ * Components
+ */
 import {
   Card,
   CardDescription,
@@ -6,9 +14,13 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+
+/**
+ * Assets
+ */
 import { Mail02Icon, Call02Icon, MailAccount01Icon } from 'hugeicons-react';
 
-const Prof = () => {
+const ProfCard = () => {
   return (
     <Card className='w-full overflow-hidden py-2 px-4 bg-transparent'>
       <div className='flex flex-row gap-4 md:gap-8 py-2 items-start lg:items-center'>
@@ -62,4 +74,4 @@ const Prof = () => {
   );
 };
 
-export default Prof;
+export default ProfCard;

@@ -3,12 +3,22 @@
  * @license Apache-2.0
  */
 
+/**
+ * Modules
+ */
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { hc } from 'hono/client';
-import type { AppTypes } from '@repo/api';
-import type { InferResponseType } from 'hono';
+import { toast } from 'sonner';
 
+/**
+ * Repos
+ */
+import type { AppTypes } from '@repo/api';
+
+/**
+ * Components
+ */
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
@@ -17,7 +27,6 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-
 import {
   Table,
   TableBody,
@@ -27,9 +36,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { User02Icon } from 'hugeicons-react';
-import { toast } from 'sonner';
 
+/**
+ * Assets
+ */
+import { User02Icon } from 'hugeicons-react';
+
+/**
+ * Types
+ */
+import type { InferResponseType } from 'hono';
 const client = hc<AppTypes>(
   import.meta.env.VITE_API_URL || 'http://localhost:3000',
 );
@@ -63,9 +79,12 @@ type SuccessfulStudentData = Extract<
 >['student'];
 
 const HomePage = () => {
+  // save student
   const [student, setStudent] = useState<SuccessfulStudentData>();
+  // save student id params
   const [, setSearchParams] = useSearchParams();
 
+  // get studentId from URL or localStorage
   const [studentId, setStudentId] = useState(() => {
     const urlParams = new URLSearchParams(window.location.search);
     return (
@@ -73,6 +92,8 @@ const HomePage = () => {
     );
   });
 
+  // submit and get student data
+  // set studentId to url and save to localStorage
   const handleSubmit = async () => {
     if (!studentId) return;
     const result = await client.api.students[':studentId'].$get({
@@ -96,6 +117,7 @@ const HomePage = () => {
     localStorage.setItem('studentId', studentId);
   };
 
+  // get studentId from url or from storage on first load
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const initialId =
@@ -117,7 +139,6 @@ const HomePage = () => {
   return (
     <div className='container max-w-7xl pt-6 md:pt-10 flex flex-col min-h-[calc(100vh-var(--header-height)-var(--footer-height))] justify-start items-stretch w-full'>
       <div className='text-xl lg:text-2xl font-semibold'> Xem điểm </div>
-
       <div className='flex flex-col lg:grid lg:grid-cols-[1fr_auto_2fr] items-stretch w-full h-full gap-4 flex-1 py-4 lg:py-10'>
         <div className='flex flex-col justify-start items-center gap-2'>
           <Field className='w-full lg:max-w-sm'>

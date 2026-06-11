@@ -27,9 +27,6 @@ const fadeInOut = {
   exit: { opacity: 0, translateY: -10 },
 };
 
-/**
- * @description Hydrate fallback displays an loading icon
- */
 const HydrateFallback = ({ className }: React.ComponentProps<'div'>) => {
   return (
     <AnimatePresence>

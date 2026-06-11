@@ -13,10 +13,7 @@ import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router';
  */
 import { Button } from '@/components/ui/button';
 
-/**
- * @description Error boundary for 404 error with Home and Go back button
- */
-const ErrorBoundary = () => {
+const ErrorPage = () => {
   const error = useRouteError();
   const navigate = useNavigate();
 
@@ -32,7 +29,8 @@ const ErrorBoundary = () => {
         <div className='flex gap-4'>
           <Button
             variant='outline'
-            onClick={() => navigate(-1)}>
+            onClick={() => navigate(-1)}
+          >
             Go Back
           </Button>
           <Button onClick={() => navigate('/', { viewTransition: true })}>
@@ -44,4 +42,4 @@ const ErrorBoundary = () => {
   }
 };
 
-export default ErrorBoundary;
+export default ErrorPage;

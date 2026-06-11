@@ -3,33 +3,50 @@
  * @license Apache-2.0
  */
 
+/**
+ * Modules
+ */
 import { createBrowserRouter } from 'react-router';
 
-import Layout from '@/Layout';
-import Fallback from '@/Fallback';
-import Error404 from '@/Error404';
-import HomePage from './HomePage';
-import SignInPage from './SignInPage';
-import AdminLayout from './AdminLayout';
-import Attendance from './Attendance';
-import Score from './Score';
-import Summary from './Summary';
-import ProgramLayout from './ProgramLayout';
-import MisPage from './MisPage';
-import DocsPage from './DocsPage';
+/**
+ * Layouts
+ */
+import MainLayout from '@/layouts/MainLayout';
+import AdminLayout from '@/layouts/AdminLayout';
+import ProgramLayout from '@/layouts/ProgramLayout';
 
-import { attendanceLoader, scoreLoader, summaryLoader } from './loader';
-import { attendanceAction, scoreAction } from './action';
+/**
+ * Pages
+ */
+import Fallback from '@/components/custom/Fallback';
+import ErrorPage from '@/pages/ErrorPage';
+import HomePage from '@/pages/HomePage';
+import SignInPage from '@/pages/SignInPage';
+import AttendancePage from '@/pages/AttendancePage';
+import ScorePage from '@/pages/ScorePage';
+import SummaryPage from '@/pages/SummaryPage';
+import MisPage from '@/pages/MisPage';
+import DocsPage from '@/pages/DocsPage';
+
+/**
+ * Loaders
+ */
+import { attendanceLoader, scoreLoader, summaryLoader } from '@/loaders/loader';
+
+/**
+ * Actions
+ */
+import { attendanceAction, scoreAction } from '@/actions/action';
 
 const router = createBrowserRouter([
-  // PUBLIC ROUTES
   {
     // main layout
     path: '',
-    Component: Layout,
+    Component: MainLayout,
     HydrateFallback: Fallback,
-    ErrorBoundary: Error404,
+    ErrorBoundary: ErrorPage,
     children: [
+      // PUBLIC ROUTES
       {
         // home page
         index: true,
@@ -41,6 +58,7 @@ const router = createBrowserRouter([
         Component: SignInPage,
       },
       {
+        // study program
         path: '/program',
         Component: ProgramLayout,
         children: [
@@ -63,21 +81,21 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: Attendance,
+            Component: AttendancePage,
             loader: attendanceLoader,
             action: attendanceAction,
             handle: { breadcrumb: 'Điểm danh' },
           },
           {
             path: 'score',
-            Component: Score,
+            Component: ScorePage,
             loader: scoreLoader,
             action: scoreAction,
             handle: { breadcrumb: 'Vào điểm' },
           },
           {
             path: 'summary',
-            Component: Summary,
+            Component: SummaryPage,
             loader: summaryLoader,
             handle: { breadcrumb: 'Tổng kết' },
           },

@@ -1,8 +1,22 @@
-import { hc } from 'hono/client';
-import type { AppTypes } from '@repo/api';
-import type { ActionFunction } from 'react-router';
-// import type { InferResponseType } from 'hono';
+/**
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
+ */
 
+/**
+ * Modules
+ */
+import { hc } from 'hono/client';
+import type { ActionFunction } from 'react-router';
+
+/**
+ * Repos
+ */
+import type { AppTypes } from '@repo/api';
+
+/**
+ * Types
+ */
 const client = hc<AppTypes>(
   import.meta.env.VITE_API_URL || 'http://localhost:3000',
   {
@@ -23,12 +37,6 @@ export type Course = {
   id: string;
   title: string;
 };
-
-// type MyClassResponse = InferResponseType<typeof client.api.classes.$get>;
-// type SuccessfulMyClassData = Extract<
-//   MyClassResponse,
-//   { classes: MyClass[] }
-// >['classes'];
 
 export const attendanceAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData();

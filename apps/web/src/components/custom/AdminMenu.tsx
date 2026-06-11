@@ -1,17 +1,18 @@
 /**
- * Copyright (c) 2026-present, Nguyen Viet Tien.
- * Licensed under the MIT License (the "LICENSE");
+ * @copyright 2026 Nguyen Viet Tien
+ * @license Apache-2.0
  */
 
 /**
  * Modules
  */
 import { useNavigate } from 'react-router';
+import Avatar from 'react-avatar';
 
 /**
  * Libraries
  */
-import { authClient } from '@/auth-client';
+import { authClient } from '@/auth-client/auth-client';
 
 /**
  * Components
@@ -32,17 +33,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import Avatar from 'react-avatar';
 
 /**
  * Assets
  */
 import { ArrowUp01Icon, Logout03Icon } from 'hugeicons-react';
 
-/**
- * Used in authed sidebar
- * @description display menu for authed user (admin, editor) with setting and sign out
- */
 const AdminMenu = () => {
   const { isMobile } = useSidebar();
   const { data: session } = authClient.useSession();
@@ -74,10 +70,10 @@ const AdminMenu = () => {
               <Avatar
                 src={user?.image || ''}
                 name={user?.name ?? user?.email}
-                size='40'
+                size='32'
                 round={true}
               />
-              <div className='grid flex-1 text-left leading-tight md:text-lg'>
+              <div className='grid flex-1 text-left leading-tight md:text-md'>
                 <div className='truncate font-medium'>{user?.name}</div>
               </div>
               <ArrowUp01Icon className='ml-auto size-4' />

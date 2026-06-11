@@ -13,17 +13,13 @@ import { Outlet } from 'react-router';
  */
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import TopAppBar from '@/TopBar';
 
 /**
  * Custom components
  */
-import ProgramSidebar from '@/ProgramSidebar';
+import TopAppBar from '@/components/custom/TopBar';
+import ProgramSidebar from '@/components/custom/ProgramSidebar';
 
-/**
- * @description master layout for all authed routes (admin, editor)
- *  with sidebar, topbar
- */
 const ProgramLayout = () => {
   return (
     <SidebarProvider>
