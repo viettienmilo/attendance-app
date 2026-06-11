@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "pnpm prisma generate && tsc",
+    "build": "prisma generate && tsc",
     "db:migrate": "prisma migrate",
     "db:gen": "prisma generate",
     "db:push": "prisma db push",
