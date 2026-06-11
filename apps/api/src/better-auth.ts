@@ -27,9 +27,15 @@ export const auth = betterAuth({
       generateId: 'serial',
     },
     // buộc trình duyệt không chặn session cookie cross-site
-    defaultCookieAttributes: {
-      sameSite: 'lax',
-      secure: false,
-    },
+    defaultCookieAttributes:
+      process.env.NODE_ENV === 'development'
+        ? {
+            sameSite: 'lax',
+            secure: false,
+          }
+        : {
+            sameSite: 'none',
+            secure: true,
+          },
   },
 });
