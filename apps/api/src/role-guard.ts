@@ -10,7 +10,11 @@ export const roleGuard = (allowedRoles: Role[]) => {
   return createMiddleware(async (c, next) => {
     const user = c.get('user');
 
-    if (!user || user.role !== 'admin') {
+    if (!user) {
+      return c.json({ error: 'Unauthorized' }, 403);
+    }
+
+    if (!allowedRoles.includes('admin')) {
       return c.json({ error: 'Unauthorized' }, 403);
     }
 
