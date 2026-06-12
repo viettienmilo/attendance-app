@@ -23,16 +23,16 @@ import ProfCard from '@/components/custom/ProfCard';
  * Assets
  */
 import { CircleIcon, SquareIcon } from 'hugeicons-react';
-import { mis } from '@/assets/mis-program';
+import { ecom } from '@/assets/ecom-program';
 
-const MisPage = () => {
+const EcomPage = () => {
   return (
     <div className='pt-3 md:pt-8 px-8 gap-4 flex flex-col justify-start items-stretch w-full overflow-hidden'>
       <div className='container w-full md:w-8xl justify-center py-8'>
-        <div className='text-2xl font-semibold'>{mis.title}</div>
+        <div className='text-2xl font-semibold'>{ecom.title}</div>
         <div className='w-full flex flex-col-reverse gap-3 lg:grid lg:grid-cols-[1fr_50px_1.5fr] mt-8 items-center'>
-          <blockquote className='border-l-4 border-amber-500 pl-4 italic text-muted-foreground my-4'>
-            {mis.brief}
+          <blockquote className='border-l-4 border-blue-600 pl-4 italic text-muted-foreground my-4'>
+            {ecom.brief}
           </blockquote>
           <div></div>
           <AspectRatio
@@ -40,16 +40,16 @@ const MisPage = () => {
             className='rounded-lg bg-muted'
           >
             <img
-              src={mis.image}
-              alt='mis-cover'
-              className='w-full rounded-lg object-cover'
+              src={ecom.image}
+              alt='ecom-cover'
+              className='w-full h-full rounded-lg object-cover'
             />
           </AspectRatio>
         </div>
 
         <div className='text-xl mt-8'>TÓM TẮT HỌC PHẦN</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {[mis.intro1, mis.intro2, mis.intro3, mis.intro4].map(
+          {[ecom.intro1, ecom.intro2, ecom.intro3, ecom.intro4].map(
             (text, index) => (
               <li
                 key={index}
@@ -69,7 +69,7 @@ const MisPage = () => {
 
         <div className='text-xl mt-8'>YÊU CẦU KỸ NĂNG</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {[mis.hardskill, mis.softskill].map((text, index) => (
+          {[ecom.hardskill, ecom.softskill].map((text, index) => (
             <li
               key={index}
               className='flex items-start gap-2.5 text-sm'
@@ -87,7 +87,7 @@ const MisPage = () => {
 
         <div className='text-xl mt-8'>NỘI DUNG HỌC PHẦN</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {mis.lesson_contents.map((chapter, index) => {
+          {ecom.lesson_contents.map((chapter, index) => {
             const [title, lessons] = Object.entries(chapter)[0] || [];
             return (
               <li
@@ -122,7 +122,7 @@ const MisPage = () => {
 
         <div className='text-xl mt-8'>BÀI TẬP LỚN</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {[mis.test_intro1, mis.test_intro2].map((text, index) => (
+          {[ecom.test_intro1, ecom.test_intro2].map((text, index) => (
             <li
               key={index}
               className='flex items-start gap-2.5 text-sm'
@@ -138,7 +138,7 @@ const MisPage = () => {
           ))}
         </ul>
         <ul className='space-y-3 ml-6 my-3'>
-          {mis.test_contents.map((test, index) => (
+          {ecom.test_contents.map((test, index) => (
             <li
               key={index}
               className='flex items-start gap-2.5 text-sm'
@@ -210,7 +210,7 @@ const MisPage = () => {
 
         <div className='text-xl mt-8'>GIÁO TRÌNH/BÀI GIẢNG</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {mis.docs.map((text, index) => (
+          {ecom.docs.map((text, index) => (
             <li
               key={index}
               className='flex items-start gap-2.5 text-sm'
@@ -231,7 +231,7 @@ const MisPage = () => {
 
         <div className='text-xl mt-8'>TÀI LIỆU THAM KHẢO</div>
         <ul className='space-y-3 ml-6 my-3'>
-          {mis.refs.map((text, index) => (
+          {ecom.refs.map((text, index) => (
             <li
               key={index}
               className='flex items-start gap-2.5 text-sm'
@@ -261,4 +261,4 @@ const MisPage = () => {
   );
 };
 
-export default MisPage;
+export default EcomPage;

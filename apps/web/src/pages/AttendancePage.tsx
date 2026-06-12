@@ -10,6 +10,7 @@ import { useFetcher, useLoaderData } from 'react-router';
 import { useState, useEffect } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 /**
  * Components
@@ -78,8 +79,14 @@ const AttendancePage = () => {
 
   // fetch students
   const handleFetchStudents = () => {
+    const formattedDate = format(attendDate, 'yyyy-MM-dd');
     studentsFetcher.submit(
-      { classId, key: 'fetch-students' },
+      {
+        classId,
+        courseId,
+        attendDate: formattedDate,
+        key: 'fetch-students',
+      },
       { method: 'POST', action: '.' },
     );
   };
@@ -110,9 +117,13 @@ const AttendancePage = () => {
   // absent: false, permission: false
   useEffect(() => {
     if (students && Array.isArray(students)) {
+      console.log(students);
       reset({
         records: students.reduce((acc: any, student: any) => {
-          acc[student.id] = { absent: false, permission: false };
+          acc[student.id] = {
+            absent: student.absent,
+            permission: student.permission,
+          };
           return acc;
         }, {}),
       });
@@ -142,7 +153,7 @@ const AttendancePage = () => {
 
     const payload: PayloadFormData = {
       courseId,
-      attendDate: attendDate.toISOString(), // convert date to string
+      attendDate: format(attendDate, 'yyyy-MM-dd'),
       attendances,
     };
 
@@ -284,7 +295,7 @@ const AttendancePage = () => {
                         <TableRow key={item.id}>
                           <TableCell className='w-[20%]'>{item.id}</TableCell>
                           <TableCell className='w-auto'>
-                            {item.firstName} {item.lastName}
+                            {item.fullName}
                           </TableCell>
                           <TableCell className='w-[25%] text-center'>
                             <Controller

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { prisma } from '@repo/db';
+import { format } from 'date-fns';
 
 import { z } from 'zod';
 import { authen } from './authen.js';
@@ -174,6 +175,47 @@ export const studentRouter = new Hono()
         })),
       });
     },
+  )
+  .get(
+    '/attendance/:courseId/:classId/:attendDate',
+    authen,
+    roleGuard(['admin']),
+    zValidator(
+      'param',
+      z.object({
+        courseId: z.string().min(4, 'Invalid course id'),
+        classId: z.string().min(3, 'Invalid class id'),
+        attendDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+      }),
+    ),
+    async (c) => {
+      const { courseId, classId, attendDate } = c.req.valid('param');
+      const results = await prisma.student.findMany({
+        where: {
+          classId,
+        },
+        include: {
+          attendance: {
+            where: {
+              courseId,
+              attendDate: new Date(attendDate),
+            },
+          },
+        },
+      });
+      return c.json({
+        message: 'success',
+        students: results.map((s) => ({
+          id: s.id,
+          fullName: `${s.firstName} ${s.lastName}`,
+          absent: s.attendance.length > 0 ? s.attendance[0].absent : false,
+          permission:
+            s.attendance.length > 0 ? s.attendance[0].permission : false,
+        })),
+      });
+    },
   );
 
 export const myclassRouter = new Hono().get(
@@ -217,7 +259,9 @@ export const attendanceRouter = new Hono()
       'json',
       z.object({
         courseId: z.string().min(4, 'Invalid course id'),
-        attendDate: z.coerce.date(),
+        attendDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
         attendances: z
           .array(
             z.object({
@@ -231,25 +275,42 @@ export const attendanceRouter = new Hono()
     ),
     async (c) => {
       const jsonData = c.req.valid('json');
-      const attendanceData = jsonData.attendances.map((at) => ({
-        studentId: at.studentId,
-        attendDate: jsonData.attendDate,
-        courseId: jsonData.courseId,
-        absent: at.absent,
-        permission: at.permission,
-      }));
       try {
-        await prisma.attendance.createMany({
-          data: attendanceData,
-          skipDuplicates: true,
+        const upsertOperations = jsonData.attendances.map((item) => {
+          return prisma.attendance.upsert({
+            // Điều kiện tìm kiếm bản ghi cũ dựa trên Composite Unique Key
+            where: {
+              attendance_identifier: {
+                studentId: item.studentId,
+                courseId: jsonData.courseId,
+                attendDate: new Date(jsonData.attendDate),
+              },
+            },
+            // Hành vi 1: Nếu ĐÃ CÓ điểm danh -> Chỉ cập nhật lại cột absent/permission
+            update: {
+              absent: item.absent,
+              permission: item.permission,
+            },
+            // Hành vi 2: Nếu CHƯA CÓ điểm danh -> Tạo mới hoàn toàn một hàng dữ liệu
+            create: {
+              studentId: item.studentId,
+              courseId: jsonData.courseId,
+              attendDate: new Date(jsonData.attendDate),
+              absent: item.absent,
+              permission: item.permission,
+            },
+          });
         });
+
+        await prisma.$transaction(upsertOperations);
         return c.json(
           {
             message: 'success',
           },
-          201,
+          200,
         );
       } catch (error) {
+        console.log(error);
         return c.json(
           {
             message: 'failed',
@@ -312,13 +373,13 @@ export const attendanceRouter = new Hono()
       return c.json(
         {
           message: 'success',
-          dateHeaders,
+          dateHeaders: dateHeaders.map((date) => format(date, 'dd-MM-yy')),
           summary: results.map((r) => ({
             id: r.id,
             fullName: `${r.firstName} ${r.lastName}`,
             attendances: r.attendance.reduce(
               (acc, current) => {
-                const dateStr = current.attendDate.toISOString().split('T')[0];
+                const dateStr = format(current.attendDate, 'dd-MM-yy');
                 acc[dateStr] = {
                   absent: current.absent,
                   permission: current.permission,
@@ -348,11 +409,6 @@ export const testRouter = new Hono().get(
   roleGuard(['admin']),
   async (c) => {
     const results = await prisma.test.findMany({
-      // where: {
-      //   id: {
-      //     gt: 1,
-      //   },
-      // },
       orderBy: {
         id: 'asc',
       },
@@ -479,7 +535,7 @@ export const scoreRouter = new Hono()
         results: results.map((student) => ({
           id: student.id,
           fullName: `${student.firstName} ${student.lastName}`,
-          dob: student.dob?.toISOString().split('T')[0],
+          dob: student.dob ? format(student.dob, 'dd-MM-yyyy') : '-',
           address: student.address,
           scores: student.score.reduce(
             (acc, current) => {

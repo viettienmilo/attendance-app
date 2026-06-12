@@ -33,7 +33,7 @@ import {
 /**
  * Assets
  */
-import { User02Icon, Loading02Icon } from 'hugeicons-react';
+import { User02Icon, Loading03Icon } from 'hugeicons-react';
 
 const HomePage = () => {
   const fetcher = useFetcher();
@@ -119,7 +119,7 @@ const HomePage = () => {
             onClick={handleSubmit}
           >
             {isSubmitting ? (
-              <Loading02Icon className='animate-spin' />
+              <Loading03Icon className='animate-spin' />
             ) : (
               'Xem điểm'
             )}
@@ -212,7 +212,7 @@ const HomePage = () => {
                       <span className='text-right'>{item.BT1.toFixed(2)}</span>
                     </li>
                     <li className='grid grid-cols-2'>
-                      <span>Bài tập 2</span>
+                      <span>Bài tập 2:</span>
                       <span className='text-right'>{item.BT2.toFixed(2)}</span>
                     </li>
                     <li className='grid grid-cols-2'>

@@ -76,7 +76,7 @@ const Header = ({ className, ...props }: React.ComponentProps<'header'>) => {
                   to='/program'
                   viewTransition
                 >
-                  Xem đề cương
+                  Xem học phần
                 </Link>
               </Button>
               {!session ? (

@@ -160,12 +160,14 @@ const SummaryPage = () => {
                   </FieldGroup>
                 </div>
                 <SheetFooter>
-                  <Button
-                    type='button'
-                    onClick={handleSubmit}
-                  >
-                    Lưu thay đổi
-                  </Button>
+                  <SheetClose asChild>
+                    <Button
+                      type='button'
+                      onClick={handleSubmit}
+                    >
+                      Xem
+                    </Button>
+                  </SheetClose>
                   <SheetClose asChild>
                     <Button variant='outline'>Đóng</Button>
                   </SheetClose>
@@ -186,12 +188,12 @@ const SummaryPage = () => {
                     <TableHead className='w-55 whitespace-nowrap font-bold'>
                       Họ tên SV
                     </TableHead>
-                    {dateHeaders?.map((h: string) => (
+                    {dateHeaders?.map((date: string) => (
                       <TableHead
-                        key={h}
-                        className='w-22 text-center whitespace-nowrap font-bold'
+                        key={date}
+                        className='w-20 text-center whitespace-nowrap font-bold'
                       >
-                        {h}
+                        {date}
                       </TableHead>
                     ))}
                     <TableHead className='w-auto' />
@@ -221,7 +223,7 @@ const SummaryPage = () => {
                           return (
                             <TableCell
                               key={date}
-                              className='w-22 text-center'
+                              className='w-20 text-center'
                             >
                               -
                             </TableCell>

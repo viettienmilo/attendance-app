@@ -26,6 +26,7 @@ import AttendancePage from '@/pages/AttendancePage';
 import ScorePage from '@/pages/ScorePage';
 import SummaryPage from '@/pages/SummaryPage';
 import MisPage from '@/pages/MisPage';
+import EcomPage from './pages/EcomPage';
 import DocsPage from '@/pages/DocsPage';
 
 /**
@@ -71,6 +72,11 @@ const router = createBrowserRouter([
             index: true,
             Component: MisPage,
             handle: { breadcrumb: 'Hệ thống thông tin quản lý' },
+          },
+          {
+            path: 'e-commerce',
+            Component: EcomPage,
+            handle: { breadcrumb: 'Thương mại điện tử' },
           },
           {
             path: 'docs',

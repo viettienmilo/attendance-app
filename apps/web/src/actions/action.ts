@@ -63,11 +63,13 @@ export const attendanceAction: ActionFunction = async ({ request }) => {
   const key = formData.get('key') as string;
 
   if (key === 'fetch-students') {
+    const courseId = formData.get('courseId') as string;
     const classId = formData.get('classId') as string;
-    const res = await client.api.students.class[':classId'].$get({
-      param: {
-        classId,
-      },
+    const attendDate = formData.get('attendDate') as string;
+    const res = await client.api.students.attendance[':courseId'][':classId'][
+      ':attendDate'
+    ].$get({
+      param: { courseId, classId, attendDate },
     });
     if (!res.ok) return null;
     const data = await res.json();
