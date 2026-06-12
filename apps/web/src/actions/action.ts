@@ -38,6 +38,26 @@ export type Course = {
   title: string;
 };
 
+export const homeStudentAction: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const studentId = formData.get('studentId') as string;
+
+  if (!studentId) return null;
+
+  try {
+    const res = await client.api.students[':studentId'].$get({
+      param: { studentId },
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data.student;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const attendanceAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const key = formData.get('key') as string;

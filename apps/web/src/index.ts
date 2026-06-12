@@ -36,7 +36,11 @@ import { attendanceLoader, scoreLoader, summaryLoader } from '@/loaders/loader';
 /**
  * Actions
  */
-import { attendanceAction, scoreAction } from '@/actions/action';
+import {
+  homeStudentAction,
+  attendanceAction,
+  scoreAction,
+} from '@/actions/action';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +55,7 @@ const router = createBrowserRouter([
         // home page
         index: true,
         Component: HomePage,
+        action: homeStudentAction,
       },
       {
         // sign in

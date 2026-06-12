@@ -7,14 +7,8 @@
  * Modules
  */
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
-import { hc } from 'hono/client';
+import { useSearchParams, useFetcher } from 'react-router';
 import { toast } from 'sonner';
-
-/**
- * Repos
- */
-import type { AppTypes } from '@repo/api';
 
 /**
  * Components
@@ -40,73 +34,25 @@ import {
 /**
  * Assets
  */
-import { User02Icon } from 'hugeicons-react';
-
-/**
- * Types
- */
-import type { InferResponseType } from 'hono';
-const client = hc<AppTypes>(
-  import.meta.env.VITE_API_URL || 'http://localhost:3000',
-);
-
-interface CourseScoreRow {
-  id: string;
-  name: string;
-  BT1: number;
-  BT2: number;
-  TX: number;
-  BN: number;
-  avgScore: number;
-  [testName: string]: any;
-}
-
-type Student = {
-  fullName: string;
-  className: string;
-  totalAbsent: number;
-  totalPermission: number;
-  scores: CourseScoreRow[];
-};
-
-type StudentResponse = InferResponseType<
-  (typeof client.api.students)[':studentId']['$get']
->;
-
-type SuccessfulStudentData = Extract<
-  StudentResponse,
-  { student: Student }
->['student'];
+import { User02Icon, Loading02Icon } from 'hugeicons-react';
 
 const HomePage = () => {
-  // save student
-  const [student, setStudent] = useState<SuccessfulStudentData>();
-  // save student id params
-  const [, setSearchParams] = useSearchParams();
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === 'submitting';
 
   // get studentId from URL or localStorage
+  const [searchParams, setSearchParams] = useSearchParams();
   const [studentId, setStudentId] = useState(() => {
-    const urlParams = new URLSearchParams(window.location.search);
     return (
-      urlParams.get('studentId') || localStorage.getItem('studentId') || ''
+      searchParams.get('studentId') || localStorage.getItem('studentId') || ''
     );
   });
 
   // submit and get student data
   // set studentId to url and save to localStorage
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!studentId) return;
-    const result = await client.api.students[':studentId'].$get({
-      param: {
-        studentId,
-      },
-    });
-    if (!result.ok) {
-      toast.error('Không tìm thấy sinh viên');
-      return null;
-    }
-    const data = await result.json();
-    setStudent(data.student);
+    localStorage.setItem('studentId', studentId);
     setSearchParams(
       (prev) => {
         prev.set('studentId', studentId);
@@ -114,27 +60,41 @@ const HomePage = () => {
       },
       { replace: true },
     );
-    localStorage.setItem('studentId', studentId);
+    fetcher.submit(
+      { studentId },
+      {
+        method: 'POST',
+      },
+    );
   };
 
   // get studentId from url or from storage on first load
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
     const initialId =
-      urlParams.get('studentId') || localStorage.getItem('studentId');
-    if (initialId) {
-      const fetchInitialData = async () => {
-        const result = await client.api.students[':studentId'].$get({
-          param: { studentId: initialId },
-        });
-        if (!result.ok) return;
-        const data = await result.json();
-        setStudent(data.student);
-      };
+      searchParams.get('studentId') || localStorage.getItem('studentId');
+    if (initialId && fetcher.state === 'idle' && !fetcher.data) {
+      if (!searchParams.get('studentId')) {
+        setSearchParams(
+          (prev) => {
+            prev.set('studentId', initialId);
+            return prev;
+          },
+          { replace: true },
+        );
+      }
 
-      fetchInitialData();
+      fetcher.submit({ studentId: initialId }, { method: 'POST' });
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data === null) {
+      toast.error('Không tìm thấy sinh viên');
+    }
+  }, [fetcher.data, fetcher.state]);
+
+  const student = fetcher.data;
 
   return (
     <div className='container max-w-7xl pt-6 md:pt-10 flex flex-col min-h-[calc(100vh-var(--header-height)-var(--footer-height))] justify-start items-stretch w-full'>
@@ -162,7 +122,11 @@ const HomePage = () => {
             className='w-full justify-self-end mt-3'
             onClick={handleSubmit}
           >
-            Xem điểm
+            {isSubmitting ? (
+              <Loading02Icon className='animate-spin' />
+            ) : (
+              'Xem điểm'
+            )}
           </Button>
         </div>
 
