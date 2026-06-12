@@ -15,7 +15,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
@@ -71,7 +70,6 @@ const ProgramSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       {/* CONTENTS */}
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main menu</SidebarGroupLabel>
           <SidebarMenu>
             {MAIN_MENU.map(({ label, url, icon }) => (
               <SidebarMenuItem key={url}>

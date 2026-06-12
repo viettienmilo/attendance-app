@@ -71,7 +71,7 @@ const Header = ({ className, ...props }: React.ComponentProps<'header'>) => {
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className='flex flex-col-reverse gap-y-3 gap-x-2 md:flex-row md:items-center max-md:p-4'
             >
-              <Button>
+              <Button asChild>
                 <Link
                   to='/program'
                   viewTransition
