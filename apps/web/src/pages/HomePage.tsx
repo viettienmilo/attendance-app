@@ -38,7 +38,7 @@ import { User02Icon, Loading02Icon } from 'hugeicons-react';
 
 const HomePage = () => {
   const fetcher = useFetcher();
-  const isSubmitting = fetcher.state === 'submitting';
+  const isSubmitting = fetcher.state !== 'idle';
 
   // get studentId from URL or localStorage
   const [searchParams, setSearchParams] = useSearchParams();
