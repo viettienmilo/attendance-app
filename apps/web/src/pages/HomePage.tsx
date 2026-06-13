@@ -238,7 +238,9 @@ const HomePage = () => {
                 <p className='pl-4'>- Thường xuyên: 20%.</p>
                 <p className='pl-4'>- Bài tập 1: 40%.</p>
                 <p className='pl-4'>- Bài tập 2: 40%.</p>
-                <p className='pl-4'>- Điểm cộng: 20%, cao nhất: +2</p>
+                <p className='pl-4'>
+                  - Điểm cộng: cộng vào điểm thường xuyên, cao nhất: +2
+                </p>
               </div>
             </div>
           </div>
