@@ -29,7 +29,12 @@ import AppBrand from '@/components/custom/AppBrand';
 /**
  * Assets
  */
-import { SolarSystemIcon, Store02Icon, Doc02Icon } from 'hugeicons-react';
+import {
+  SolarSystemIcon,
+  Store02Icon,
+  ChartHistogramIcon,
+  Doc02Icon,
+} from 'hugeicons-react';
 
 /**
  * Constants
@@ -44,6 +49,11 @@ const MAIN_MENU = [
     label: 'Thương mại điện tử',
     url: 'e-commerce',
     icon: <Store02Icon />,
+  },
+  {
+    label: 'Phần mềm SPSS',
+    url: 'spss',
+    icon: <ChartHistogramIcon />,
   },
   {
     label: 'Tài liệu',

@@ -28,6 +28,7 @@ import SummaryPage from '@/pages/SummaryPage';
 import MisPage from '@/pages/MisPage';
 import EcomPage from './pages/EcomPage';
 import DocsPage from '@/pages/DocsPage';
+import SpssPage from '@/pages/SpssPage';
 
 /**
  * Loaders
@@ -77,6 +78,11 @@ const router = createBrowserRouter([
             path: 'e-commerce',
             Component: EcomPage,
             handle: { breadcrumb: 'Thương mại điện tử' },
+          },
+          {
+            path: 'spss',
+            Component: SpssPage,
+            handle: { breadcrumb: 'Phần mềm SPSS' },
           },
           {
             path: 'docs',
