@@ -529,47 +529,118 @@ export const scoreRouter = new Hono()
     ),
     async (c) => {
       const { courseId, testId, scores } = c.req.valid('json');
+
       try {
-        const upsertOperations = scores.map((item) => {
-          return prisma.score.upsert({
-            // Điều kiện tìm kiếm bản ghi cũ dựa trên Composite Unique Key
-            where: {
-              courseId_testId_studentId: {
-                studentId: item.studentId,
-                courseId: courseId,
-                testId: testId,
-              },
-            },
-            // Hành vi 1: Nếu ĐÃ CÓ điểm -> Chỉ cập nhật lại cột score
-            update: {
-              score: item.score,
-            },
-            // Hành vi 2: Nếu CHƯA CÓ điểm -> Tạo mới hoàn toàn một hàng dữ liệu
-            create: {
+        const studentIds = scores.map((item) => item.studentId);
+
+        // 1. Tìm nhanh các học sinh ĐÃ CÓ điểm cho bài kiểm tra này (Chỉ tốn 1 câu lệnh SELECT)
+        const existingScores = await prisma.score.findMany({
+          where: {
+            courseId: courseId,
+            testId: testId,
+            studentId: { in: studentIds },
+          },
+          select: { studentId: true },
+        });
+
+        const existingStudentIds = new Set(
+          existingScores.map((s) => s.studentId),
+        );
+
+        // 2. Phân loại danh sách học sinh thành nhóm Tạo mới và Cập nhật
+        const recordsToCreate: any[] = [];
+        const recordsToUpdate = scores.filter((item) => {
+          if (existingStudentIds.has(item.studentId)) {
+            return true; // Cho vào danh sách chạy lệnh Update
+          } else {
+            recordsToCreate.push({
               studentId: item.studentId,
               courseId: courseId,
               testId: testId,
               score: item.score,
-            },
-          });
+            });
+            return false;
+          }
         });
 
-        await prisma.$transaction(upsertOperations);
-        return c.json(
-          {
-            message: 'success',
-          },
-          200,
-        );
+        // 3. Thực thi ghi dữ liệu hàng loạt xuống DB (Gỡ bỏ hoàn toàn prisma.$transaction)
+
+        // Bước A: Tạo mới hàng loạt cho học sinh chưa có điểm (Chỉ tốn đúng 1 truy vấn)
+        if (recordsToCreate.length > 0) {
+          await prisma.score.createMany({
+            data: recordsToCreate,
+          });
+        }
+
+        // Bước B: Cập nhật song song điểm số cho học sinh đã có điểm (Tận dụng Connection Pool)
+        if (recordsToUpdate.length > 0) {
+          await Promise.all(
+            recordsToUpdate.map((item) =>
+              prisma.score.update({
+                where: {
+                  courseId_testId_studentId: {
+                    studentId: item.studentId,
+                    courseId: courseId,
+                    testId: testId,
+                  },
+                },
+                data: {
+                  score: item.score,
+                },
+              }),
+            ),
+          );
+        }
+
+        return c.json({ message: 'success' }, 200);
       } catch (error) {
-        return c.json(
-          {
-            message: 'failed',
-          },
-          500 as const,
-        );
+        console.error('Scores Upsert Error: ', error);
+        return c.json({ message: 'failed' }, 500);
       }
     },
+    // async (c) => {
+    //   const { courseId, testId, scores } = c.req.valid('json');
+    //   try {
+    //     const upsertOperations = scores.map((item) => {
+    //       return prisma.score.upsert({
+    //         // Điều kiện tìm kiếm bản ghi cũ dựa trên Composite Unique Key
+    //         where: {
+    //           courseId_testId_studentId: {
+    //             studentId: item.studentId,
+    //             courseId: courseId,
+    //             testId: testId,
+    //           },
+    //         },
+    //         // Hành vi 1: Nếu ĐÃ CÓ điểm -> Chỉ cập nhật lại cột score
+    //         update: {
+    //           score: item.score,
+    //         },
+    //         // Hành vi 2: Nếu CHƯA CÓ điểm -> Tạo mới hoàn toàn một hàng dữ liệu
+    //         create: {
+    //           studentId: item.studentId,
+    //           courseId: courseId,
+    //           testId: testId,
+    //           score: item.score,
+    //         },
+    //       });
+    //     });
+
+    //     await prisma.$transaction(upsertOperations);
+    //     return c.json(
+    //       {
+    //         message: 'success',
+    //       },
+    //       200,
+    //     );
+    //   } catch (error) {
+    //     return c.json(
+    //       {
+    //         message: 'failed',
+    //       },
+    //       500 as const,
+    //     );
+    //   }
+    // },
   )
   .get(
     '/summary/:courseId/:classId',
