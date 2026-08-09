@@ -277,13 +277,14 @@ export const attendanceRouter = new Hono()
     ),
     async (c) => {
       const jsonData = c.req.valid('json');
-      const attendDateObj = new Date(jsonData.attendDate);
+
+      // CHÚ Ý: Đảm bảo ngày tháng chuẩn ISO dạng YYYY-MM-DDT00:00:00.000Z để khớp với kiểu @db.Date của DB
+      const attendDateObj = new Date(`${jsonData.attendDate}T00:00:00.000Z`);
 
       try {
-        // 1. Tách danh sách ID của các học sinh được gửi lên
         const studentIds = jsonData.attendances.map((item) => item.studentId);
 
-        // 2. Tìm xem những học sinh nào đã có dữ liệu điểm danh ngày hôm đó rồi
+        // 1. Tìm nhanh các bản ghi đã tồn tại (Chỉ tốn 1 câu lệnh SELECT)
         const existingAttendances = await prisma.attendance.findMany({
           where: {
             courseId: jsonData.courseId,
@@ -297,11 +298,11 @@ export const attendanceRouter = new Hono()
           existingAttendances.map((a) => a.studentId),
         );
 
-        // 3. Phân loại danh sách thành: Cần Tạo Mới và Cần Cập Nhật
+        // 2. Phân loại danh sách học sinh
         const recordsToCreate: any[] = [];
         const recordsToUpdate = jsonData.attendances.filter((item) => {
           if (existingStudentIds.has(item.studentId)) {
-            return true; // Cho vào danh sách Update
+            return true;
           } else {
             recordsToCreate.push({
               studentId: item.studentId,
@@ -314,16 +315,19 @@ export const attendanceRouter = new Hono()
           }
         });
 
-        // 4. Chạy Transaction tối ưu tối đa chỉ với 2 nhóm lệnh chính
-        await prisma.$transaction(
-          [
-            // Lệnh 1: Tạo mới hàng loạt cho những học sinh chưa có tên
-            ...(recordsToCreate.length > 0
-              ? [prisma.attendance.createMany({ data: recordsToCreate })]
-              : []),
+        // 3. Thực thi ghi dữ liệu hàng loạt (Gỡ bỏ hoàn toàn prisma.$transaction)
 
-            // Lệnh 2: Cập nhật song song cho những học sinh đã có tên
-            ...recordsToUpdate.map((item) =>
+        // Bước A: Tạo mới hàng loạt cho học sinh chưa điểm danh (Chỉ tốn 1 truy vấn duy nhất)
+        if (recordsToCreate.length > 0) {
+          await prisma.attendance.createMany({
+            data: recordsToCreate,
+          });
+        }
+
+        // Bước B: Cập nhật song song cho học sinh đã có tên (Không khóa DB, tận dụng Connection Pool)
+        if (recordsToUpdate.length > 0) {
+          await Promise.all(
+            recordsToUpdate.map((item) =>
               prisma.attendance.update({
                 where: {
                   attendance_identifier: {
@@ -338,13 +342,12 @@ export const attendanceRouter = new Hono()
                 },
               }),
             ),
-          ],
-          { timeout: 10000 },
-        ); // Set timeout to 10 seconds
+          );
+        }
 
         return c.json({ message: 'success' }, 200);
       } catch (error) {
-        console.error(error);
+        console.error('Attendance Error: ', error);
         return c.json({ message: 'failed' }, 500);
       }
     },
