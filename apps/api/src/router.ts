@@ -276,51 +276,122 @@ export const attendanceRouter = new Hono()
     ),
     async (c) => {
       const jsonData = c.req.valid('json');
-      const attendDate = new Date(jsonData.attendDate);
+      const attendDateObj = new Date(jsonData.attendDate);
+
       try {
-        const upsertOperations = jsonData.attendances.map((item) => {
-          return prisma.attendance.upsert({
-            // Điều kiện tìm kiếm bản ghi cũ dựa trên Composite Unique Key
-            where: {
-              attendance_identifier: {
-                studentId: item.studentId,
-                courseId: jsonData.courseId,
-                attendDate,
-              },
-            },
-            // Hành vi 1: Nếu ĐÃ CÓ điểm danh -> Chỉ cập nhật lại cột absent/permission
-            update: {
-              absent: item.absent,
-              permission: item.permission,
-            },
-            // Hành vi 2: Nếu CHƯA CÓ điểm danh -> Tạo mới hoàn toàn một hàng dữ liệu
-            create: {
-              studentId: item.studentId,
-              courseId: jsonData.courseId,
-              attendDate,
-              absent: item.absent,
-              permission: item.permission,
-            },
-          });
+        // 1. Tách danh sách ID của các học sinh được gửi lên
+        const studentIds = jsonData.attendances.map((item) => item.studentId);
+
+        // 2. Tìm xem những học sinh nào đã có dữ liệu điểm danh ngày hôm đó rồi
+        const existingAttendances = await prisma.attendance.findMany({
+          where: {
+            courseId: jsonData.courseId,
+            attendDate: attendDateObj,
+            studentId: { in: studentIds },
+          },
+          select: { studentId: true },
         });
 
-        await prisma.$transaction(upsertOperations, { timeout: 10000 }); // Set timeout to 10 seconds
-        return c.json(
-          {
-            message: 'success',
-          },
-          200,
+        const existingStudentIds = new Set(
+          existingAttendances.map((a) => a.studentId),
         );
+
+        // 3. Phân loại danh sách thành: Cần Tạo Mới và Cần Cập Nhật
+        const recordsToCreate: any[] = [];
+        const recordsToUpdate = jsonData.attendances.filter((item) => {
+          if (existingStudentIds.has(item.studentId)) {
+            return true; // Cho vào danh sách Update
+          } else {
+            recordsToCreate.push({
+              studentId: item.studentId,
+              courseId: jsonData.courseId,
+              attendDate: attendDateObj,
+              absent: item.absent,
+              permission: item.permission,
+            });
+            return false;
+          }
+        });
+
+        // 4. Chạy Transaction tối ưu tối đa chỉ với 2 nhóm lệnh chính
+        await prisma.$transaction([
+          // Lệnh 1: Tạo mới hàng loạt cho những học sinh chưa có tên
+          ...(recordsToCreate.length > 0
+            ? [prisma.attendance.createMany({ data: recordsToCreate })]
+            : []),
+
+          // Lệnh 2: Cập nhật song song cho những học sinh đã có tên
+          ...recordsToUpdate.map((item) =>
+            prisma.attendance.update({
+              where: {
+                attendance_identifier: {
+                  studentId: item.studentId,
+                  courseId: jsonData.courseId,
+                  attendDate: attendDateObj,
+                },
+              },
+              data: {
+                absent: item.absent,
+                permission: item.permission,
+              },
+            }),
+          ),
+        ]);
+
+        return c.json({ message: 'success' }, 200);
       } catch (error) {
-        console.log(error);
-        return c.json(
-          {
-            message: 'failed',
-          },
-          500 as const,
-        );
+        console.error(error);
+        return c.json({ message: 'failed' }, 500);
       }
     },
+
+    // async (c) => {
+    //   const jsonData = c.req.valid('json');
+    //   const attendDate = new Date(jsonData.attendDate);
+    //   try {
+    //     const upsertOperations = jsonData.attendances.map((item) => {
+    //       return prisma.attendance.upsert({
+    //         // Điều kiện tìm kiếm bản ghi cũ dựa trên Composite Unique Key
+    //         where: {
+    //           attendance_identifier: {
+    //             studentId: item.studentId,
+    //             courseId: jsonData.courseId,
+    //             attendDate,
+    //           },
+    //         },
+    //         // Hành vi 1: Nếu ĐÃ CÓ điểm danh -> Chỉ cập nhật lại cột absent/permission
+    //         update: {
+    //           absent: item.absent,
+    //           permission: item.permission,
+    //         },
+    //         // Hành vi 2: Nếu CHƯA CÓ điểm danh -> Tạo mới hoàn toàn một hàng dữ liệu
+    //         create: {
+    //           studentId: item.studentId,
+    //           courseId: jsonData.courseId,
+    //           attendDate,
+    //           absent: item.absent,
+    //           permission: item.permission,
+    //         },
+    //       });
+    //     });
+
+    //     await prisma.$transaction(upsertOperations, { timeout: 10000 }); // Set timeout to 10 seconds
+    //     return c.json(
+    //       {
+    //         message: 'success',
+    //       },
+    //       200,
+    //     );
+    //   } catch (error) {
+    //     console.log(error);
+    //     return c.json(
+    //       {
+    //         message: 'failed',
+    //       },
+    //       500 as const,
+    //     );
+    //   }
+    // },
   )
   .get(
     '/summary/:courseId/:classId',
