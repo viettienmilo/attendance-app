@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { authen } from './authen.js';
 import { roleGuard } from './role-guard.js';
 import { zValidator } from '@hono/zod-validator';
+import { time } from 'console';
 
 interface CourseScoreRow {
   id: string;
@@ -314,29 +315,32 @@ export const attendanceRouter = new Hono()
         });
 
         // 4. Chạy Transaction tối ưu tối đa chỉ với 2 nhóm lệnh chính
-        await prisma.$transaction([
-          // Lệnh 1: Tạo mới hàng loạt cho những học sinh chưa có tên
-          ...(recordsToCreate.length > 0
-            ? [prisma.attendance.createMany({ data: recordsToCreate })]
-            : []),
+        await prisma.$transaction(
+          [
+            // Lệnh 1: Tạo mới hàng loạt cho những học sinh chưa có tên
+            ...(recordsToCreate.length > 0
+              ? [prisma.attendance.createMany({ data: recordsToCreate })]
+              : []),
 
-          // Lệnh 2: Cập nhật song song cho những học sinh đã có tên
-          ...recordsToUpdate.map((item) =>
-            prisma.attendance.update({
-              where: {
-                attendance_identifier: {
-                  studentId: item.studentId,
-                  courseId: jsonData.courseId,
-                  attendDate: attendDateObj,
+            // Lệnh 2: Cập nhật song song cho những học sinh đã có tên
+            ...recordsToUpdate.map((item) =>
+              prisma.attendance.update({
+                where: {
+                  attendance_identifier: {
+                    studentId: item.studentId,
+                    courseId: jsonData.courseId,
+                    attendDate: attendDateObj,
+                  },
                 },
-              },
-              data: {
-                absent: item.absent,
-                permission: item.permission,
-              },
-            }),
-          ),
-        ]);
+                data: {
+                  absent: item.absent,
+                  permission: item.permission,
+                },
+              }),
+            ),
+          ],
+          { timeout: 10000 },
+        ); // Set timeout to 10 seconds
 
         return c.json({ message: 'success' }, 200);
       } catch (error) {
