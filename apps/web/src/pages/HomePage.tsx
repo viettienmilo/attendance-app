@@ -94,6 +94,7 @@ const HomePage = () => {
   }, [fetcher.data, fetcher.state]);
 
   const student = fetcher.data;
+  console.log('student', student);
 
   return (
     <div className='container max-w-7xl pt-6 md:pt-10 flex flex-col min-h-[calc(100vh-var(--header-height)-var(--footer-height))] justify-start items-stretch w-full'>

@@ -69,8 +69,8 @@ export const studentRouter = new Hono()
         result.score.reduce(
           (acc, current) => {
             const { course, test, score } = current;
-            const name = course.title;
             const id = course.id;
+            const name = course.title;
             const weightedScore = Number(score);
 
             if (!acc[name]) {
@@ -91,6 +91,7 @@ export const studentRouter = new Hono()
           {} as Record<string, CourseScoreRow>,
         ),
       );
+
       const student = {
         fullName: `${result.firstName} ${result.lastName}`,
         className: result.myclass.name,
@@ -275,6 +276,7 @@ export const attendanceRouter = new Hono()
     ),
     async (c) => {
       const jsonData = c.req.valid('json');
+      const attendDate = new Date(jsonData.attendDate);
       try {
         const upsertOperations = jsonData.attendances.map((item) => {
           return prisma.attendance.upsert({
@@ -283,7 +285,7 @@ export const attendanceRouter = new Hono()
               attendance_identifier: {
                 studentId: item.studentId,
                 courseId: jsonData.courseId,
-                attendDate: new Date(jsonData.attendDate),
+                attendDate,
               },
             },
             // Hành vi 1: Nếu ĐÃ CÓ điểm danh -> Chỉ cập nhật lại cột absent/permission
@@ -295,14 +297,14 @@ export const attendanceRouter = new Hono()
             create: {
               studentId: item.studentId,
               courseId: jsonData.courseId,
-              attendDate: new Date(jsonData.attendDate),
+              attendDate,
               absent: item.absent,
               permission: item.permission,
             },
           });
         });
 
-        await prisma.$transaction(upsertOperations);
+        await prisma.$transaction(upsertOperations, { timeout: 10000 }); // Set timeout to 10 seconds
         return c.json(
           {
             message: 'success',
