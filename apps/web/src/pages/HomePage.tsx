@@ -137,60 +137,62 @@ const HomePage = () => {
           <div className='w-full h-full grid grid-cols-[200px_1fr] items-stretch gap-3'>
             <p className=''>Sinh viên</p>
             <p className='font-bold'>{student?.fullName ?? '-'}</p>
-            <p>Số ngày nghỉ</p>
-            <p>{student?.totalAbsent ?? '-'}</p>
-            <p>Số ngày nghỉ có phép</p>
-            <p>{student?.totalPermission ?? '-'}</p>
+            <p className=''>Mã số SV</p>
+            <p className='font-bold'>{student?.studentId ?? '-'}</p>
           </div>
           <div className='flex flex-col w-full h-full'>
-            <p>Điểm số</p>
+            <p className='py-3'>Kết quả học tập</p>
             <Table className='hidden md:block'>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='w-[32%]'>Môn học</TableHead>
-                  <TableHead className='w-[12%] text-center'>
-                    Thường xuyên
-                  </TableHead>
-                  <TableHead className='w-[12%] text-center'>
-                    Bài tập 1
-                  </TableHead>
-                  <TableHead className='w-[12%] text-center'>
-                    Bài tập 2
-                  </TableHead>
-                  <TableHead className='w-[12%] text-center'>
+                  <TableHead className='w-[30%]'>Môn học</TableHead>
+                  <TableHead className='w-[8%] text-center'>Vắng</TableHead>
+                  <TableHead className='w-[8%] text-center'>Vắng (P)</TableHead>
+                  <TableHead className='w-[10%] text-center'>TX</TableHead>
+                  <TableHead className='w-[10%] text-center'>BT1</TableHead>
+                  <TableHead className='w-[10%] text-center'>BT2</TableHead>
+                  <TableHead className='w-[10%] text-center'>
                     Điểm cộng
                   </TableHead>
                   <TableHead className='w-[20%] text-center font-semibold'>
-                    Điểm Trung bình
+                    Điểm TBBP
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {!student && (
                   <TableRow>
-                    <TableCell className='w-[32%]'>---</TableCell>
-                    <TableCell className='w-[12%] text-center'>-</TableCell>
-                    <TableCell className='w-[12%] text-center'>-</TableCell>
-                    <TableCell className='w-[12%] text-center'>-</TableCell>
-                    <TableCell className='w-[12%] text-center'>-</TableCell>
+                    <TableCell className='w-[30%]'>---</TableCell>
+                    <TableCell className='w-[8%] text-center'>-</TableCell>
+                    <TableCell className='w-[8%] text-center'>-</TableCell>
+                    <TableCell className='w-[10%] text-center'>-</TableCell>
+                    <TableCell className='w-[10%] text-center'>-</TableCell>
+                    <TableCell className='w-[10%] text-center'>-</TableCell>
+                    <TableCell className='w-[10%] text-center'>-</TableCell>
                     <TableCell className='w-[20%] text-center'>-</TableCell>
                   </TableRow>
                 )}
                 {student?.scores?.map((item: any) => (
                   <TableRow key={item.id}>
-                    <TableCell className='w-[32%] whitespace-nowrap'>
+                    <TableCell className='w-[30%] whitespace-nowrap'>
                       {item.name ?? '-'}
                     </TableCell>
-                    <TableCell className='w-[12%] text-center'>
+                    <TableCell className='w-[8%] text-center'>
+                      {item.totalAbsent ?? '-'}
+                    </TableCell>
+                    <TableCell className='w-[8%] text-center'>
+                      {item.totalPermission ?? '-'}
+                    </TableCell>
+                    <TableCell className='w-[10%] text-center'>
                       {item.TX?.toFixed(2) ?? '-'}
                     </TableCell>
-                    <TableCell className='w-[12%] text-center'>
+                    <TableCell className='w-[10%] text-center'>
                       {item.BT1?.toFixed(2) ?? '-'}
                     </TableCell>
-                    <TableCell className='w-[12%] text-center'>
+                    <TableCell className='w-[10%] text-center'>
                       {item.BT2?.toFixed(2) ?? '-'}
                     </TableCell>
-                    <TableCell className='w-[12%] text-center'>
+                    <TableCell className='w-[10%] text-center'>
                       {item.BN?.toFixed(2) ?? '-'}
                     </TableCell>
                     <TableCell className='w-[20%] text-center font-semibold'>
@@ -205,27 +207,45 @@ const HomePage = () => {
                 {student?.scores?.map((item: any) => (
                   <Fragment key={item.name}>
                     <li className='grid grid-cols-2'>
+                      <span>Vắng:</span>
+                      <span className='text-right'>
+                        {item.totalAbsent ?? '-'}
+                      </span>
+                    </li>
+                    <li className='grid grid-cols-2'>
+                      <span>Vắng (P):</span>
+                      <span className='text-right'>
+                        {item.totalPermission ?? '-'}
+                      </span>
+                    </li>
+                    <li className='grid grid-cols-2'>
                       <span>Thường xuyên:</span>
-                      <span className='text-right'>{item.TX.toFixed(2)}</span>
+                      <span className='text-right'>
+                        {item.TX?.toFixed(2) ?? '-'}
+                      </span>
                     </li>
                     <li className='grid grid-cols-2'>
                       <span>Bài tập 1:</span>
-                      <span className='text-right'>{item.BT1.toFixed(2)}</span>
+                      <span className='text-right'>
+                        {item.BT1?.toFixed(2) ?? '-'}
+                      </span>
                     </li>
                     <li className='grid grid-cols-2'>
                       <span>Bài tập 2:</span>
-                      <span className='text-right'>{item.BT2.toFixed(2)}</span>
+                      <span className='text-right'>
+                        {item.BT2?.toFixed(2) ?? '-'}
+                      </span>
                     </li>
                     <li className='grid grid-cols-2'>
                       <span className='border-b pb-1'>Điểm cộng:</span>
                       <span className='text-right border-b'>
-                        {item.BN.toFixed(2)}
+                        {item.BN?.toFixed(2) ?? '-'}
                       </span>
                     </li>
                     <li className='grid grid-cols-2'>
                       <span className='font-semibold'>Điểm Trung bình:</span>
                       <span className='text-right font-semibold'>
-                        {item.avgScore.toFixed(2)}
+                        {item.avgScore?.toFixed(2) ?? '-'}
                       </span>
                     </li>
                   </Fragment>

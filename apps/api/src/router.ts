@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { authen } from './authen.js';
 import { roleGuard } from './role-guard.js';
 import { zValidator } from '@hono/zod-validator';
-import { time } from 'console';
 
 interface CourseScoreRow {
   id: string;
@@ -74,8 +73,12 @@ export const studentRouter = new Hono()
             const name = course.title;
             const weightedScore = Number(score);
 
-            if (!acc[name]) {
-              acc[name] = {
+            if (!acc[id]) {
+              const courseAttendances = result.attendance.filter(
+                (at) => at.courseId === id,
+              );
+
+              acc[id] = {
                 id,
                 name,
                 BT1: 0,
@@ -83,10 +86,13 @@ export const studentRouter = new Hono()
                 TX: 0,
                 BN: 0,
                 avgScore: 0,
+                totalAbsent: courseAttendances.filter((at) => at.absent).length,
+                totalPermission: courseAttendances.filter((at) => at.permission)
+                  .length,
               };
             }
-            acc[name][test.name] = weightedScore;
-            acc[name].avgScore += weightedScore * Number(test.weight);
+            acc[id][test.name] = weightedScore;
+            acc[id].avgScore += weightedScore * Number(test.weight);
             return acc;
           },
           {} as Record<string, CourseScoreRow>,
@@ -94,13 +100,14 @@ export const studentRouter = new Hono()
       );
 
       const student = {
+        studentId: result.id,
         fullName: `${result.firstName} ${result.lastName}`,
         className: result.myclass.name,
-        totalAbsent: result.attendance.filter((at) => at.absent === true)
-          .length,
-        totalPermission: result.attendance.filter(
-          (per) => per.permission === true,
-        ).length,
+        // totalAbsent: result.attendance.filter((at) => at.absent === true)
+        //   .length,
+        // totalPermission: result.attendance.filter(
+        //   (per) => per.permission === true,
+        // ).length,
         scores,
       };
       return c.json(
